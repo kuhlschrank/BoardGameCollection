@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using BoardGameCollection.Core.Services;
+using BoardGameCollection.Data;
+using BoardGameCollection.Data.Entities;
+using BoardGameCollection.Geeknector;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +13,16 @@ namespace BoardGameCollection.Crawler
 {
     public class CrawlService : IHostedService
     {
+        private readonly BoardGameRepository _repository;
+        private readonly GeekConnector _geekConnector;
+
+        public CrawlService()
+        {
+            // DI!
+            _repository = new BoardGameRepository();
+            _geekConnector = new GeekConnector();
+        }
+
         public Task StartAsync(CancellationToken cancellationToken)
         {
             return Task.Run(async () =>
@@ -23,13 +37,49 @@ namespace BoardGameCollection.Crawler
 
         public async Task ExecuteAsync()
         {
-            Console.Write("Crawling...");
+            Console.WriteLine("Crawling...");
+
+            //using var context = new MyContext();
+            //var exists = context.Unknowns.Find(42);
+            //if (exists != null)
+            //{
+            //    Console.WriteLine("It exists!");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Does not exist!");
+            //    context.Unknowns.Add(new Unknown { Id = 42 });
+            //    context.SaveChanges();
+            //}
+
+            CrawlOnceUnknown(250);
+
             await Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        private void CrawlOnceUnknown(int maxCount)
+        {
+            var ids = _repository.GetUnknownIds(maxCount);
+            if (ids.Any())
+            {
+                Log($"{ids.Count()} unknown boardgames.");
+                var boardGames = _geekConnector.RetrieveBoardGames(ids).ToList();
+                Log($"{boardGames.Count()} boardgames retrieved.");
+                _repository.StoreBoardGames(boardGames);
+                _repository.DeleteUnknownIds(ids);
+            }
+        }
+
+        static void Log(object message)
+        {
+#if DEBUG
+            System.Console.WriteLine("{0} - {1}", DateTime.Now, message);
+#endif
         }
     }
 }

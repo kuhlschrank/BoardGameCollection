@@ -3,7 +3,7 @@
 EXPOSE 80
 
 RUN mkdir app
-ADD BoardGameCollection.Crawler/bin/Debug/netcoreapp3.1/publish/ app/
+ADD bin/Debug/netcoreapp3.1/publish/ app/
 WORKDIR /app
 
 ENTRYPOINT ["dotnet", "BoardGameCollection.Crawler.dll"]

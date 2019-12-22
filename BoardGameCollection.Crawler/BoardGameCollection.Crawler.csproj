@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BoardGameCollection.Data\BoardGameCollection.Data.csproj" />
+    <ProjectReference Include="..\BoardGameCollection.Geeknector\BoardGameCollection.Geeknector.csproj" />
+  </ItemGroup>
+
 </Project>
