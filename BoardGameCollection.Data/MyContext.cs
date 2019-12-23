@@ -8,6 +8,12 @@ namespace BoardGameCollection.Data
 {
     public class MyContext : DbContext
     {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Expansion>()
+                .HasKey(e => new { e.BoardGameId, e.ExpansionId });
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(

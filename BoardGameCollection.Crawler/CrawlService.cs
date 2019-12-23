@@ -52,7 +52,7 @@ namespace BoardGameCollection.Crawler
             //    context.SaveChanges();
             //}
 
-            CrawlOnceUnknown(250);
+            CrawlOnce();
 
             await Task.CompletedTask;
         }
@@ -60,6 +60,12 @@ namespace BoardGameCollection.Crawler
         public Task StopAsync(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        public void CrawlOnce()
+        {
+            CrawlOnceUnknown(500);
+            CrawlOnceKnown(20, 48);
         }
 
         private void CrawlOnceUnknown(int maxCount)
@@ -72,6 +78,18 @@ namespace BoardGameCollection.Crawler
                 Log($"{boardGames.Count()} boardgames retrieved.");
                 _repository.StoreBoardGames(boardGames);
                 _repository.DeleteUnknownIds(ids);
+            }
+        }
+
+        private void CrawlOnceKnown(int maxCount, int minimumHoursPassed)
+        {
+            var ids = _repository.GetNextBoardGamesToUpdate(maxCount, minimumHoursPassed).Select(bg => bg.Id).ToArray();
+            if (ids.Any())
+            {
+                Log($"{ids.Count()} known boardgames.");
+                var boardGames = _geekConnector.RetrieveBoardGames(ids).ToList();
+                Log($"{boardGames.Count()} boardgames updated.");
+                _repository.StoreBoardGames(boardGames);
             }
         }
 
