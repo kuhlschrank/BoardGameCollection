@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardGameCollection.Api", "BoardGameCollection.Api\BoardGameCollection.Api.csproj", "{499084A5-F847-48E1-BB0C-7FA453F409DA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardGameCollection.Core", "BoardGameCollection.Core\BoardGameCollection.Core.csproj", "{2B27C588-005A-4C54-A808-5E9B32B74CA5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardGameCollection.Geeknector", "BoardGameCollection.Geeknector\BoardGameCollection.Geeknector.csproj", "{F47A250A-F25D-4B37-9377-20366B33A594}"
@@ -13,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardGameCollection.Domain"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardGameCollection.Data", "BoardGameCollection.Data\BoardGameCollection.Data.csproj", "{DE336B02-8CAE-46FB-B465-F14D02E2A7F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameCollection.Crawler", "BoardGameCollection.Crawler\BoardGameCollection.Crawler.csproj", "{127D2488-D924-41D1-9846-C845AE695F82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardGameCollection.Crawler", "BoardGameCollection.Crawler\BoardGameCollection.Crawler.csproj", "{127D2488-D924-41D1-9846-C845AE695F82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameCollection.Web", "BoardGameCollection.Web\BoardGameCollection.Web.csproj", "{29BE1350-C219-44E4-9ABF-3D7453706355}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{499084A5-F847-48E1-BB0C-7FA453F409DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{499084A5-F847-48E1-BB0C-7FA453F409DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{499084A5-F847-48E1-BB0C-7FA453F409DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{499084A5-F847-48E1-BB0C-7FA453F409DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2B27C588-005A-4C54-A808-5E9B32B74CA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2B27C588-005A-4C54-A808-5E9B32B74CA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B27C588-005A-4C54-A808-5E9B32B74CA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{127D2488-D924-41D1-9846-C845AE695F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{127D2488-D924-41D1-9846-C845AE695F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{127D2488-D924-41D1-9846-C845AE695F82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29BE1350-C219-44E4-9ABF-3D7453706355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29BE1350-C219-44E4-9ABF-3D7453706355}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29BE1350-C219-44E4-9ABF-3D7453706355}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29BE1350-C219-44E4-9ABF-3D7453706355}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

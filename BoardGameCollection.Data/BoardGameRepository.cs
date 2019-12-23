@@ -24,13 +24,12 @@ namespace BoardGameCollection.Data
 
         public IEnumerable<CoreModels.BoardGame> GetBoardGames(IEnumerable<int> ids)
         {
-            throw new NotImplementedException();
-            //using (var db = new BoardGameCollectionEntities())
-            //{
-            //    var boardGames = db.BoardGames.Where(bg => ids.ToList().Contains(bg.Id)).ToList();
-            //    var models = _mapper.Map<List<BoardGame>, IEnumerable<CoreModels.BoardGame>>(boardGames);
-            //    return models;
-            //}
+            using (var db = new MyContext())
+            {
+                var boardGames = db.BoardGames.Include(e => e.Expansions).Where(bg => ids.ToList().Contains(bg.Id)).ToList();
+                var models = _mapper.Map<List<BoardGame>, IEnumerable<CoreModels.BoardGame>>(boardGames);
+                return models;
+            }
         }
 
         public IEnumerable<CoreModels.BoardGame> GetNextBoardGamesToUpdate(int count, int minimumHoursPassed)
@@ -77,18 +76,17 @@ namespace BoardGameCollection.Data
 
         public void StoreUnknownIds(IEnumerable<int> unknownIds)
         {
-            throw new NotImplementedException();
-            //using (var db = new BoardGameCollectionEntities())
-            //{
-            //    foreach (var id in unknownIds)
-            //    {
-            //        if (!db.BoardGames.Any(bg => bg.Id == id) && !db.Unknowns.Any(bg => bg.Id == id))
-            //        {
-            //            db.Unknowns.Add(new Unknown { Id = id });
-            //            db.SaveChanges();
-            //        }
-            //    }
-            //}
+            using (var db = new MyContext())
+            {
+                foreach (var id in unknownIds)
+                {
+                    if (!db.BoardGames.Any(bg => bg.Id == id) && !db.Unknowns.Any(bg => bg.Id == id))
+                    {
+                        db.Unknowns.Add(new Unknown { Id = id });
+                        db.SaveChanges();
+                    }
+                }
+            }
         }
 
         public int[] GetUnknownIds(int count)
