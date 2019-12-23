@@ -4,6 +4,7 @@ using BoardGameCollection.Domain;
 using BoardGameCollection.Geeknector;
 using BoardGameCollection.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,13 @@ namespace BoardGameCollection.Web.Controllers
 {
     public class CollectionController : Controller
     {
+        private IMemoryCache _cache;
+
+        public CollectionController(IMemoryCache cache)
+        {
+            _cache = cache;
+        }
+
         public ActionResult Owned(string username)
         {
             var list = new OwnedGamesList(GetGameList((manager, s) => manager.GetGamePossessions(s), username).ToList());
@@ -37,12 +45,11 @@ namespace BoardGameCollection.Web.Controllers
             foreach (var singleName in username.Split(','))
             {
                 var cacheKey = $"{singleName}|{listDelegate.GetHashCode()}";
-                //var gamesList = HttpRuntime.Cache.Get(cacheKey) as IEnumerable<T>;
-                //if (gamesList == null)
-                //{
-                    var gamesList = listDelegate(c, singleName);
-                //    HttpRuntime.Cache.Insert(cacheKey, gamesList, null, DateTime.UtcNow.AddMinutes(5), Cache.NoSlidingExpiration);
-                //}
+                var gamesList = _cache.GetOrCreate(cacheKey, entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+                    return listDelegate.Invoke(c, singleName);
+                });
                 list.AddRange(gamesList);
             }
             return list;
