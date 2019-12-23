@@ -4,6 +4,7 @@ using System.Linq;
 using CoreModels = BoardGameCollection.Core.Models;
 using System;
 using BoardGameCollection.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BoardGameCollection.Data
 {
@@ -49,7 +50,7 @@ namespace BoardGameCollection.Data
             {
                 foreach (var boardGame in boardGames)
                 {
-                    var entity = db.BoardGames.SingleOrDefault(bg => bg.Id == boardGame.Id);
+                    var entity = db.BoardGames.Include(e => e.Expansions).SingleOrDefault(bg => bg.Id == boardGame.Id);
                     if (entity == null)
                     {
                         entity = new BoardGame() { Id = boardGame.Id };

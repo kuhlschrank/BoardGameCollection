@@ -10,7 +10,7 @@ namespace BoardGameCollection.Data.Entities
     {
         public BoardGame()
         {
-            Expansions = new List<Expansion>();
+            Expansions = new HashSet<Expansion>();
         }
 
         [Key]
@@ -25,6 +25,6 @@ namespace BoardGameCollection.Data.Entities
         public double? AverageRating { get; set; }
         public DateTimeOffset LastUpdate { get; set; }
 
-        public List<Expansion> Expansions { get; set; }
+        public ICollection<Expansion> Expansions { get; set; }
     }
 }

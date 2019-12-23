@@ -21,6 +21,8 @@ namespace BoardGameCollection.Data
         }
 
         public DbSet<BoardGame> BoardGames { get; set; }
+        public DbSet<Expansion> Expansions { get; set; }
+        public DbSet<Player> Players { get; set; }
         public DbSet<Unknown> Unknowns { get; set; }
     }
 }
