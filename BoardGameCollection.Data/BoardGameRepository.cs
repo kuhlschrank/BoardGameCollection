@@ -39,7 +39,7 @@ namespace BoardGameCollection.Data
         {
             using (var db = new CollectionContext(_connectionString))
             {
-                var minimumDate = DateTimeOffset.Now.AddHours(minimumHoursPassed);
+                var minimumDate = DateTimeOffset.Now.AddHours(-minimumHoursPassed);
                 var boardGames = db.BoardGames.Where(bg => bg.LastUpdate < minimumDate).OrderBy(bg => bg.LastUpdate).Take(count).ToList();
                 var models = _mapper.Map<List<BoardGame>, IEnumerable<CoreModels.BoardGame>>(boardGames);
                 return models;

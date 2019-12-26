@@ -23,35 +23,20 @@ namespace BoardGameCollection.Crawler
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            TimeSpan inverval = TimeSpan.FromMinutes(1);
             return Task.Run(async () =>
             {
                 while (true)
                 {
                     await ExecuteAsync();
-                    await Task.Delay(5000, cancellationToken);
+                    await Task.Delay(inverval, cancellationToken);
                 }
             });
         }
 
         public async Task ExecuteAsync()
         {
-            Console.WriteLine("Crawling...");
-
-            //using var context = new CollectionContext();
-            //var exists = context.Unknowns.Find(42);
-            //if (exists != null)
-            //{
-            //    Console.WriteLine("It exists!");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Does not exist!");
-            //    context.Unknowns.Add(new Unknown { Id = 42 });
-            //    context.SaveChanges();
-            //}
-
             CrawlOnce();
-
             await Task.CompletedTask;
         }
 
