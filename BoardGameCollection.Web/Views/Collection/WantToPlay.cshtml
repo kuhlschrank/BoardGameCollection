@@ -5,7 +5,7 @@
 
 @{
     var owners = string.Join(" und ", Model.Select(o => o.Owner).Distinct());
-    ViewBag.Title = owners + "'s Spielwünsche";
+    ViewBag.Title = "Spielewünsche: " + owners;
 
     var wantGroupings = Model.GroupBy(wantToPlayGame => wantToPlayGame.BoardGame.Id);
     var gamePlayWantages = new List<BoardGameCollection.Web.Models.GamePlayWantage>();

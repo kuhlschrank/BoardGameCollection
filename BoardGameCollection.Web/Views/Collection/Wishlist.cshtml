@@ -4,7 +4,7 @@
 
 @{
     var owners = string.Join(" und ", Model.Select(o => o.Owner).Distinct());
-    ViewBag.Title = owners + "'s Spiele";
+    ViewBag.Title = "Wunschlisten: " + owners;
 
     var priorities = new Dictionary<int, string>();
     priorities[1] = "Must have";
