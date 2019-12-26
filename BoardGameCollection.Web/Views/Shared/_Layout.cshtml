@@ -18,12 +18,17 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @foreach (var link in new (string displayName, string actionName, string userName)[] {
+                             ("Florian", "Owned", "kuhlschrank"),
+                             ("Andreas", "Owned", "cemon"),
+                             ("Thomas", "Owned", "the_happy_llama"),
+                             ("Alle", "Owned", ""),
+                             ("Wunschlisten", "Wishlist", ""),
+                             ("Spielewünsche", "WantToPlay", ""),
+                         })
+                        {
+                            <li class="nav-item">@Html.ActionLink(link.displayName, link.actionName, new { username = link.userName }, new { @class = "nav-link text-dark" })</li>
+                        }
                     </ul>
                 </div>
             </div>
