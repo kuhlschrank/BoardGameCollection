@@ -14,7 +14,7 @@ namespace BoardGameCollection.Data
         AutoMapper.IMapper _mapper;
         private readonly string _connectionString;
 
-        public BoardGameRepository(string connectionString)
+        public BoardGameRepository(IConfiguration configuration)
         {
             _mapper = new AutoMapper.MapperConfiguration(cfg =>
             {
@@ -22,7 +22,7 @@ namespace BoardGameCollection.Data
                 .ForMember(d => d.ExpansionIds, o => o.MapFrom(s => s.Expansions.Select(e => e.ExpansionId).ToList()))
                 .ReverseMap();
             }).CreateMapper();
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("CollectionContext");
         }
 
         public IEnumerable<CoreModels.BoardGame> GetBoardGames(IEnumerable<int> ids)

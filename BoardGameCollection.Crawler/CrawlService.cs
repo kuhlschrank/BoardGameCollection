@@ -1,4 +1,5 @@
-﻿using BoardGameCollection.Data;
+﻿using BoardGameCollection.Core.Services;
+using BoardGameCollection.Data;
 using BoardGameCollection.Geeknector;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -11,17 +12,15 @@ namespace BoardGameCollection.Crawler
 {
     public class CrawlService : IHostedService
     {
-        private readonly BoardGameRepository _repository;
-        private readonly GeekConnector _geekConnector;
+        private readonly IBoardGameRepository _repository;
+        private readonly IGeekConnector _geekConnector;
         private readonly IConfiguration _configuration;
 
-        public CrawlService(IConfiguration configuration)
+        public CrawlService(IConfiguration configuration, IBoardGameRepository repository, IGeekConnector geekConnector)
         {
             _configuration = configuration;
-
-            // DI!
-            _repository = new BoardGameRepository(_configuration.GetConnectionString("CollectionContext"));
-            _geekConnector = new GeekConnector();           
+            _repository = repository;
+            _geekConnector = geekConnector;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

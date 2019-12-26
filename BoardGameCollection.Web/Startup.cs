@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using BoardGameCollection.Core.Services;
+using BoardGameCollection.Data;
+using BoardGameCollection.Domain;
+using BoardGameCollection.Geeknector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,6 +29,10 @@ namespace BoardGameCollection.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddTransient<IBoardGameRepository, BoardGameRepository>();
+            services.AddTransient<IGeekConnector, GeekConnector>();
+            services.AddTransient<IBoardGameManager, BoardGameManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

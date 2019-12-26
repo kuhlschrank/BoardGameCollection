@@ -13,5 +13,7 @@ namespace BoardGameCollection.Core.Services
         void StoreUnknownIds(IEnumerable<int> unknownIds);
         IEnumerable<BoardGame> GetBoardGames(IEnumerable<int> ids);
         IEnumerable<BoardGame> GetNextBoardGamesToUpdate(int count, int minimumHoursPassed);
+        int[] GetUnknownIds(int count);
+        void DeleteUnknownIds(IEnumerable<int> ids);
     }
 }

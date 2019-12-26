@@ -13,13 +13,11 @@ namespace BoardGameCollection.Domain
     {
         private readonly IGeekConnector _geekConnector;
         private readonly IBoardGameRepository _boardGameRepository;
-        private readonly IBoardGameCrawler _boardGameCrawler;
 
-        public BoardGameManager(IGeekConnector geekConnector, IBoardGameRepository boardGameRepository, IBoardGameCrawler boardGameCrawler)
+        public BoardGameManager(IGeekConnector geekConnector, IBoardGameRepository boardGameRepository)
         {
             _geekConnector = geekConnector;
             _boardGameRepository = boardGameRepository;
-            _boardGameCrawler = boardGameCrawler;
         }
 
         public IEnumerable<GamePossession> GetGamePossessions(string username)

@@ -17,11 +17,13 @@ namespace BoardGameCollection.Web.Controllers
     {
         private readonly IMemoryCache _cache;
         private readonly IConfiguration _configuration;
+        private readonly IBoardGameManager _boardGameManager;
 
-        public CollectionController(IMemoryCache cache, IConfiguration configuration)
+        public CollectionController(IMemoryCache cache, IConfiguration configuration, IBoardGameManager boardGameManager)
         {
             _cache = cache;
             _configuration = configuration;
+            _boardGameManager = boardGameManager;
         }
 
         public ActionResult Owned(string username)
@@ -44,16 +46,13 @@ namespace BoardGameCollection.Web.Controllers
         {
             var list = new List<T>();
             if (string.IsNullOrWhiteSpace(username)) username = "kuhlschrank,cemon,the_happy_llama";
-            var repo = new BoardGameRepository(_configuration.GetConnectionString("CollectionContext"));
-            var nector = new GeekConnector();
-            IBoardGameManager c = new BoardGameManager(nector, repo , new BoardGameCrawler(nector, repo));
             foreach (var singleName in username.Split(','))
             {
                 var cacheKey = $"{singleName}|{listDelegate.GetHashCode()}";
                 var gamesList = _cache.GetOrCreate(cacheKey, entry =>
                 {
                     entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                    return listDelegate.Invoke(c, singleName);
+                    return listDelegate.Invoke(_boardGameManager, singleName);
                 });
                 list.AddRange(gamesList);
             }
