@@ -131,7 +131,7 @@ namespace BoardGameCollection.Geeknector
             var thumnailUriNode = node.Elements(XName.Get("thumbnail")).FirstOrDefault();
             var imageUriNode = node.Elements(XName.Get("image")).FirstOrDefault();
             var yearPublishedNode = node.Elements(XName.Get("yearpublished")).FirstOrDefault().Attribute(XName.Get("value"));
-            var bestPlayerNunmberNode = node.Elements(XName.Get("poll")).FirstOrDefault(x => x.Attribute(XName.Get("name")).Value == "suggested_numplayers");
+            var suggestedPlayerNumberNode = node.Elements(XName.Get("poll")).FirstOrDefault(x => x.Attribute(XName.Get("name")).Value == "suggested_numplayers");
 
             var statisticsNode = node.Elements(XName.Get("statistics")).FirstOrDefault();
             var ratingsNode = statisticsNode.Elements(XName.Get("ratings")).FirstOrDefault();
@@ -142,8 +142,6 @@ namespace BoardGameCollection.Geeknector
             var linkNodes = node.Elements(XName.Get("link")).Where(x => x.Attribute("type").Value == "boardgameexpansion" && x.Attribute("inbound") == null);
             expansionIds.AddRange(linkNodes.Select(linkNode => Int32.Parse(linkNode.Attribute(XName.Get("id")).Value)));
 
-            var bestPlayerNumber = EstimateBestPlayerNumber(bestPlayerNunmberNode);
-            var bestPlayerNumbers = BestPlayerNumbers(bestPlayerNunmberNode);
             var boardGame = new BoardGame
             {
                 Id = idNode == null ? 0 : Int32.Parse(idNode.Value),
@@ -151,8 +149,7 @@ namespace BoardGameCollection.Geeknector
                 MinPlayers = minPlayersNode == null ? -1 : Int32.Parse(minPlayersNode.Value),
                 MaxPlayers = maxPlayersNode == null ? 99 : Int32.Parse(maxPlayersNode.Value),
                 ExpansionIds = expansionIds,
-                BestPlayerNumber = bestPlayerNumber,
-                BestPlayerNumbers = bestPlayerNumbers,
+                SuggestedPlayerNumbers = SuggestedPlayerNumbers(suggestedPlayerNumberNode),
                 ThumbnailUri = thumnailUriNode == null ? "" : thumnailUriNode.Value,
                 ImageUri = imageUriNode == null ? "" : imageUriNode.Value,
                 YearPublished = yearPublishedNode == null ? 1900 : Int32.Parse(yearPublishedNode.Value),
@@ -160,25 +157,6 @@ namespace BoardGameCollection.Geeknector
             };
 
             return boardGame;
-        }
-
-        private static int EstimateBestPlayerNumber(XElement bestPlayerNumberNode)
-        {
-            var bestPlayerNumber = 0;
-            var bestVotes = 0;
-            foreach (var resultsNode in bestPlayerNumberNode.Elements("results"))
-            {
-                var numPlayers = Int32.Parse(resultsNode.Attribute("numplayers").Value.Trim('+'));
-                var votes = 0;
-                if (resultsNode.Elements("result").Where(n => n.Attribute("value").Value == "Best").FirstOrDefault() != null)
-                    votes = Int32.Parse(resultsNode.Elements("result").Where(n => n.Attribute("value").Value == "Best").FirstOrDefault().Attribute("numvotes").Value);
-                if (votes > bestVotes)
-                {
-                    bestVotes = votes;
-                    bestPlayerNumber = numPlayers;
-                }
-            }
-            return bestPlayerNumber;
         }
 
         //<poll name = "suggested_numplayers" title="User Suggested Number of Players" totalvotes="534">
@@ -196,9 +174,9 @@ namespace BoardGameCollection.Geeknector
         //  ...
         //</poll>
 
-        private static string[] BestPlayerNumbers(XElement bestPlayerNumberNode)
+        private static string[] SuggestedPlayerNumbers(XElement bestPlayerNumberNode)
         {
-            var bestPlayerNumbers = new List<string>();
+            var suggestedPlayerNumbers = new List<string>();
             foreach (var resultsNode in bestPlayerNumberNode.Elements("results"))
             {
                 var numPlayers = resultsNode.Attribute("numplayers").Value;
@@ -209,6 +187,9 @@ namespace BoardGameCollection.Geeknector
                         value = n.Attribute("value").Value
                     })
                     .Where(n => n.numvotes > 0);
+                if (!validResults.Any())
+                    continue;
+
                 var maxVotes = validResults.Max(r => r.numvotes);
                 var maxResults = validResults.Where(r => r.numvotes == maxVotes).ToList();
                 if (maxResults.Count > 1)
@@ -216,9 +197,11 @@ namespace BoardGameCollection.Geeknector
                 
                 var result = maxResults.First(r => r.numvotes == maxVotes);
                 if (result.value == "Best")
-                    bestPlayerNumbers.Add(numPlayers);
+                    suggestedPlayerNumbers.Add(numPlayers);
+                if (result.value == "Not Recommended")
+                    suggestedPlayerNumbers.Add($"-{numPlayers}");
             }
-            return bestPlayerNumbers.ToArray();
+            return suggestedPlayerNumbers.ToArray();
         }
     }
 }

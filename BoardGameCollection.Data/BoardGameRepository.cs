@@ -20,7 +20,8 @@ namespace BoardGameCollection.Data
             {
                 cfg.CreateMap<BoardGame, CoreModels.BoardGame>()
                 .ForMember(d => d.ExpansionIds, o => o.MapFrom(s => s.Expansions.Select(e => e.ExpansionId).ToList()))
-                .ForMember(d => d.BestPlayerNumbers, o => o.MapFrom(s => (s.BestPlayerNumbers ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries)));
+                .ForMember(d => d.SuggestedPlayerNumbers, o => o.MapFrom(s => (s.SuggestedPlayerNumbers ?? "")
+                    .Split(';', StringSplitOptions.RemoveEmptyEntries)));
             }).CreateMapper();
             _connectionString = configuration.GetConnectionString("CollectionContext");
         }
@@ -64,8 +65,7 @@ namespace BoardGameCollection.Data
                     entity.MinPlayers = boardGame.MinPlayers;
                     entity.MaxPlayers = boardGame.MaxPlayers;
                     entity.YearPublished = boardGame.YearPublished;
-                    entity.BestPlayerNumber = boardGame.BestPlayerNumber;
-                    entity.BestPlayerNumbers = string.Join(";", boardGame.BestPlayerNumbers);
+                    entity.SuggestedPlayerNumbers = string.Join(";", boardGame.SuggestedPlayerNumbers);
                     entity.AverageRating = boardGame.AverageRating;
                     entity.LastUpdate = DateTime.Now;
 

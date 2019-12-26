@@ -10,10 +10,11 @@ namespace BoardGameCollection.Web.Views
     {
         public static string BestPlayerCountTag(this BoardGame boardGame)
         {
-            if (!boardGame.BestPlayerNumbers.Any())
+            var bestNumbers = boardGame.SuggestedPlayerNumbers.Where(n => !n.StartsWith('-'));
+            if (!bestNumbers.Any())
                 return "&nbsp;";
 
-            var numbers = boardGame.BestPlayerNumbers
+            var numbers = bestNumbers
                 .Select(n => new { num = Int32.Parse(n.TrimEnd('+')), andSoOn = n.EndsWith('+'), original = n });
             var orderedNumbers = numbers
                 .Where(n => n.andSoOn || !numbers.Any(other => other.num == n.num && other.andSoOn))
