@@ -202,15 +202,20 @@ namespace BoardGameCollection.Geeknector
             foreach (var resultsNode in bestPlayerNumberNode.Elements("results"))
             {
                 var numPlayers = resultsNode.Attribute("numplayers").Value;
-                var mostVotedResult = resultsNode.Elements("result")
+                var validResults = resultsNode.Elements("result")
                     .Select(n => new
                     {
                         numvotes = Int32.Parse(n.Attribute("numvotes").Value),
                         value = n.Attribute("value").Value
                     })
-                    .OrderByDescending(n => n.numvotes)
-                    .FirstOrDefault(n => n.numvotes > 0);
-                if (mostVotedResult != null && mostVotedResult.value == "Best")
+                    .Where(n => n.numvotes > 0);
+                var maxVotes = validResults.Max(r => r.numvotes);
+                var maxResults = validResults.Where(r => r.numvotes == maxVotes).ToList();
+                if (maxResults.Count > 1)
+                    continue;
+                
+                var result = maxResults.First(r => r.numvotes == maxVotes);
+                if (result.value == "Best")
                     bestPlayerNumbers.Add(numPlayers);
             }
             return bestPlayerNumbers.ToArray();
