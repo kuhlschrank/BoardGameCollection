@@ -1,0 +1,9 @@
+﻿FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.0-buster-slim
+
+EXPOSE 80
+
+RUN mkdir app
+ADD bin/Debug/netcoreapp3.1/publish/ app/
+WORKDIR /app
+
+ENTRYPOINT ["dotnet", "BoardGameCollection.Web.dll"]
