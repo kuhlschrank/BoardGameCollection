@@ -20,7 +20,7 @@ namespace BoardGameCollection.Data
             {
                 cfg.CreateMap<BoardGame, CoreModels.BoardGame>()
                 .ForMember(d => d.ExpansionIds, o => o.MapFrom(s => s.Expansions.Select(e => e.ExpansionId).ToList()))
-                .ReverseMap();
+                .ForMember(d => d.BestPlayerNumbers, o => o.MapFrom(s => (s.BestPlayerNumbers ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries)));
             }).CreateMapper();
             _connectionString = configuration.GetConnectionString("CollectionContext");
         }

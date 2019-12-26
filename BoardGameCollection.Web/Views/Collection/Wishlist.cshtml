@@ -1,5 +1,7 @@
 ﻿@using System.Globalization
 @using System.Linq;
+@using BoardGameCollection.Web.Views
+
 @model IEnumerable<BoardGameCollection.Core.Models.GameWish>
 
 @{
@@ -26,43 +28,49 @@
         </tr>
         <tr>
             <th></th>
-            <th><small>Titel</small>
+            <th>
+                <small>Titel</small>
             </th>
-            <th><small>Spieler</small>
+            <th colspan="2">
+                <small>Spieler</small>
             </th>
         </tr>
-        foreach (var boardGameGrouping in group.GroupBy(g=>g.BoardGame).OrderByDescending(p => p.Key.AverageRating))
+        foreach (var boardGameGrouping in group.GroupBy(g => g.BoardGame).OrderByDescending(p => p.Key.AverageRating))
         {
             var item = boardGameGrouping.Key;
-        <tr>
-            @{ var rowspan = 1; }
-            <td rowspan="@rowspan" style="vertical-align:top">
-                <a href="@item.ImageUri" target="_blank">
-                    <img src="@item.ThumbnailUri" style="height:50px;max-width:100px" />
-            </td>
-            <td>
-                <table width="100%">
-                    <tr>
-                        <td>
-                            <a target="_blank" href="http://boardgamegeek.com/boardgame/@item.Id" style="text-decoration: none">@item.Title</a> (@string.Format(CultureInfo.InvariantCulture, "{0:0.00}", item.AverageRating))
-                        </td>
-                        <td style="text-align: right">
-                            @foreach (var ownerGroup in boardGameGrouping)
-                            {
-                                if (ownerGroup.Comment != null)
+            <tr>
+                @{ var rowspan = 1; }
+                <td rowspan="@rowspan" style="vertical-align:top">
+                    <a href="@item.ImageUri" target="_blank">
+                        <img src="@item.ThumbnailUri" style="height:50px;max-width:100px" />
+                </td>
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <a target="_blank" href="http://boardgamegeek.com/boardgame/@item.Id" style="text-decoration: none">@item.Title</a> (@string.Format(CultureInfo.InvariantCulture, "{0:0.00}", item.AverageRating))
+                            </td>
+                            <td style="text-align: right">
+                                @foreach (var ownerGroup in boardGameGrouping)
                                 {
-                                    <q style="font-style:italic;font-size:smaller">&ldquo;@ownerGroup.Comment&rdquo;</q><span>&nbsp;-&nbsp;</span>
+                                    if (ownerGroup.Comment != null)
+                                    {
+                                        <q style="font-style:italic;font-size:smaller">&ldquo;@ownerGroup.Comment&rdquo;</q><span>&nbsp;-&nbsp;</span>
+                                    }
+                                    <a target="_blank" href="http://www.boardgamegeek.com/collection/user/@ownerGroup.Owner" style="text-decoration: none"><small>@ownerGroup.Owner</small></a><br />
                                 }
-                                <a target="_blank" href="http://www.boardgamegeek.com/collection/user/@ownerGroup.Owner" style="text-decoration: none"><small>@ownerGroup.Owner</small></a><br />
-                            }
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <td>
-                @item.MinPlayers&nbsp;-&nbsp;@item.MaxPlayers&nbsp;(@item.BestPlayerNumber)
-            </td>
-        </tr>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <div style="text-align:right">@item.MinPlayers&nbsp;-&nbsp;@item.MaxPlayers</div>
+                </td>
+                <td>
+                    <div style="font-size:x-small;margin-left:3px;color:lawngreen">@Html.Raw(item.BestPlayerCountTag())</div>
+                    <div style="font-size:x-small;margin-left:3px;color:indianred">@Html.Raw(item.NotRecommendedPlayerCountTag())</div>
+                </td>
+            </tr>
         }
     }
 

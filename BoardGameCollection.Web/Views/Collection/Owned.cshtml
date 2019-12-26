@@ -1,5 +1,7 @@
 ﻿@using System.Globalization
 @using System.Linq;
+@using BoardGameCollection.Web.Views
+
 @model BoardGameCollection.Web.Models.OwnedGamesList
 
 @{
@@ -22,7 +24,7 @@
             <th>
                 <small>Titel</small>
             </th>
-            <th>
+            <th colspan="2">
                 <small>Spieler</small>
             </th>
         </tr>
@@ -51,21 +53,25 @@
                     </table>
                 </td>
                 <td>
-                    @ownedGame.BoardGame.MinPlayers&nbsp;-&nbsp;@ownedGame.BoardGame.MaxPlayers&nbsp;(@ownedGame.BoardGame.BestPlayerNumber)
+                    <div style="text-align:right">@ownedGame.BoardGame.MinPlayers&nbsp;-&nbsp;@ownedGame.BoardGame.MaxPlayers</div>
+                </td>
+                <td>
+                    <div style="font-size:x-small;margin-left:3px;color:lawngreen">@Html.Raw(@ownedGame.BoardGame.BestPlayerCountTag())</div>
+                    <div style="font-size:x-small;margin-left:3px;color:indianred">@Html.Raw(ownedGame.BoardGame.NotRecommendedPlayerCountTag())</div>
                 </td>
             </tr>
-                    foreach (var ownedExpansion in ownedGame.Expansions)
-                    {
-                        <tr>
-                            <td>
-                                <small><a target="_blank" href="http://boardgamegeek.com/boardgame/@ownedExpansion.BoardGame.Id" style="text-decoration: none">@ownedExpansion.BoardGame.Title</a> (@string.Format(CultureInfo.InvariantCulture, "{0:0.00}", ownedExpansion.BoardGame.AverageRating))</small>
-                            </td>
-                            <td>
-                                <small>@ownedExpansion.BoardGame.MinPlayers&nbsp;-&nbsp;@ownedExpansion.BoardGame.MaxPlayers</small>
-                            </td>
-                        </tr>
-                            }
-                        }
-                    }
+            foreach (var ownedExpansion in ownedGame.Expansions)
+            {
+                <tr>
+                    <td>
+                        <small><a target="_blank" href="http://boardgamegeek.com/boardgame/@ownedExpansion.BoardGame.Id" style="text-decoration: none">@ownedExpansion.BoardGame.Title</a> (@string.Format(CultureInfo.InvariantCulture, "{0:0.00}", ownedExpansion.BoardGame.AverageRating))</small>
+                    </td>
+                    <td>
+                        <div style="text-align:right;font-size:small">@ownedGame.BoardGame.MinPlayers&nbsp;-&nbsp;@ownedGame.BoardGame.MaxPlayers</div>
+                    </td>
+                </tr>
+            }
+        }
+    }
 
 </table>
