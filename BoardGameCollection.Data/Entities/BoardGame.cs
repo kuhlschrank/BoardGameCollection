@@ -22,6 +22,7 @@ namespace BoardGameCollection.Data.Entities
         public int? MaxPlayers { get; set; }
         public int? YearPublished { get; set; }
         public int? BestPlayerNumber { get; set; }
+        public string BestPlayerNumbers { get; set; }
         public double? AverageRating { get; set; }
         public DateTimeOffset LastUpdate { get; set; }
 

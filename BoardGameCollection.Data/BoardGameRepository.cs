@@ -65,6 +65,7 @@ namespace BoardGameCollection.Data
                     entity.MaxPlayers = boardGame.MaxPlayers;
                     entity.YearPublished = boardGame.YearPublished;
                     entity.BestPlayerNumber = boardGame.BestPlayerNumber;
+                    entity.BestPlayerNumbers = string.Join(";", boardGame.BestPlayerNumbers);
                     entity.AverageRating = boardGame.AverageRating;
                     entity.LastUpdate = DateTime.Now;
 

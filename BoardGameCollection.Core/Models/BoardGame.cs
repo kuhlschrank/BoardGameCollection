@@ -16,6 +16,7 @@ namespace BoardGameCollection.Core.Models
         public int YearPublished { get; set; }
         public List<int> ExpansionIds { get; set; } = new List<int>();
         public int BestPlayerNumber { get; set; }
+        public string[] BestPlayerNumbers { get; set; }
         public double AverageRating { get; set; }
 
         public DateTime LastUpdated { get; set; }

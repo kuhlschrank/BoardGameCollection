@@ -143,6 +143,7 @@ namespace BoardGameCollection.Geeknector
             expansionIds.AddRange(linkNodes.Select(linkNode => Int32.Parse(linkNode.Attribute(XName.Get("id")).Value)));
 
             var bestPlayerNumber = EstimateBestPlayerNumber(bestPlayerNunmberNode);
+            var bestPlayerNumbers = BestPlayerNumbers(bestPlayerNunmberNode);
             var boardGame = new BoardGame
             {
                 Id = idNode == null ? 0 : Int32.Parse(idNode.Value),
@@ -151,6 +152,7 @@ namespace BoardGameCollection.Geeknector
                 MaxPlayers = maxPlayersNode == null ? 99 : Int32.Parse(maxPlayersNode.Value),
                 ExpansionIds = expansionIds,
                 BestPlayerNumber = bestPlayerNumber,
+                BestPlayerNumbers = bestPlayerNumbers,
                 ThumbnailUri = thumnailUriNode == null ? "" : thumnailUriNode.Value,
                 ImageUri = imageUriNode == null ? "" : imageUriNode.Value,
                 YearPublished = yearPublishedNode == null ? 1900 : Int32.Parse(yearPublishedNode.Value),
@@ -160,11 +162,11 @@ namespace BoardGameCollection.Geeknector
             return boardGame;
         }
 
-        private static int EstimateBestPlayerNumber(XElement bestPlayerNunmberNode)
+        private static int EstimateBestPlayerNumber(XElement bestPlayerNumberNode)
         {
             var bestPlayerNumber = 0;
             var bestVotes = 0;
-            foreach (var resultsNode in bestPlayerNunmberNode.Elements("results"))
+            foreach (var resultsNode in bestPlayerNumberNode.Elements("results"))
             {
                 var numPlayers = Int32.Parse(resultsNode.Attribute("numplayers").Value.Trim('+'));
                 var votes = 0;
@@ -177,6 +179,41 @@ namespace BoardGameCollection.Geeknector
                 }
             }
             return bestPlayerNumber;
+        }
+
+        //<poll name = "suggested_numplayers" title="User Suggested Number of Players" totalvotes="534">
+        //  ...
+        //<results numplayers = "5" >
+        //  < result value="Best" numvotes="315" />
+        //  <result value = "Recommended" numvotes="128" />
+        //  <result value = "Not Recommended" numvotes="4" />
+        //</results>
+        //<results numplayers = "6" >
+        //  < result value="Best" numvotes="137" />
+        //  <result value = "Recommended" numvotes="220" />
+        //  <result value = "Not Recommended" numvotes="46" />
+        //</results>
+        //  ...
+        //</poll>
+
+        private static string[] BestPlayerNumbers(XElement bestPlayerNumberNode)
+        {
+            var bestPlayerNumbers = new List<string>();
+            foreach (var resultsNode in bestPlayerNumberNode.Elements("results"))
+            {
+                var numPlayers = resultsNode.Attribute("numplayers").Value;
+                var mostVotedResult = resultsNode.Elements("result")
+                    .Select(n => new
+                    {
+                        numvotes = Int32.Parse(n.Attribute("numvotes").Value),
+                        value = n.Attribute("value").Value
+                    })
+                    .OrderByDescending(n => n.numvotes)
+                    .FirstOrDefault(n => n.numvotes > 0);
+                if (mostVotedResult != null && mostVotedResult.value == "Best")
+                    bestPlayerNumbers.Add(numPlayers);
+            }
+            return bestPlayerNumbers.ToArray();
         }
     }
 }
