@@ -14,11 +14,9 @@ namespace BoardGameCollection.Crawler
     {
         private readonly IBoardGameRepository _repository;
         private readonly IGeekConnector _geekConnector;
-        private readonly IConfiguration _configuration;
 
-        public CrawlService(IConfiguration configuration, IBoardGameRepository repository, IGeekConnector geekConnector)
+        public CrawlService(IBoardGameRepository repository, IGeekConnector geekConnector)
         {
-            _configuration = configuration;
             _repository = repository;
             _geekConnector = geekConnector;
         }
