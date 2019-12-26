@@ -1,10 +1,8 @@
-﻿using BoardGameCollection.Core.Services;
-using BoardGameCollection.Data;
-using BoardGameCollection.Data.Entities;
+﻿using BoardGameCollection.Data;
 using BoardGameCollection.Geeknector;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,12 +13,15 @@ namespace BoardGameCollection.Crawler
     {
         private readonly BoardGameRepository _repository;
         private readonly GeekConnector _geekConnector;
+        private readonly IConfiguration _configuration;
 
-        public CrawlService()
+        public CrawlService(IConfiguration configuration)
         {
+            _configuration = configuration;
+
             // DI!
-            _repository = new BoardGameRepository();
-            _geekConnector = new GeekConnector();
+            _repository = new BoardGameRepository(_configuration.GetConnectionString("CollectionContext"));
+            _geekConnector = new GeekConnector();           
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -39,7 +40,7 @@ namespace BoardGameCollection.Crawler
         {
             Console.WriteLine("Crawling...");
 
-            //using var context = new MyContext();
+            //using var context = new CollectionContext();
             //var exists = context.Unknowns.Find(42);
             //if (exists != null)
             //{

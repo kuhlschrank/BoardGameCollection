@@ -5,6 +5,7 @@ using BoardGameCollection.Geeknector;
 using BoardGameCollection.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,13 @@ namespace BoardGameCollection.Web.Controllers
 {
     public class CollectionController : Controller
     {
-        private IMemoryCache _cache;
+        private readonly IMemoryCache _cache;
+        private readonly IConfiguration _configuration;
 
-        public CollectionController(IMemoryCache cache)
+        public CollectionController(IMemoryCache cache, IConfiguration configuration)
         {
             _cache = cache;
+            _configuration = configuration;
         }
 
         public ActionResult Owned(string username)
@@ -41,7 +44,9 @@ namespace BoardGameCollection.Web.Controllers
         {
             var list = new List<T>();
             if (string.IsNullOrWhiteSpace(username)) username = "kuhlschrank,cemon,the_happy_llama";
-            IBoardGameManager c = new BoardGameManager(new GeekConnector(), new BoardGameRepository(), new BoardGameCrawler(new GeekConnector(), new BoardGameRepository()));
+            var repo = new BoardGameRepository(_configuration.GetConnectionString("CollectionContext"));
+            var nector = new GeekConnector();
+            IBoardGameManager c = new BoardGameManager(nector, repo , new BoardGameCrawler(nector, repo));
             foreach (var singleName in username.Split(','))
             {
                 var cacheKey = $"{singleName}|{listDelegate.GetHashCode()}";

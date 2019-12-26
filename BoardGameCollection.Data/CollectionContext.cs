@@ -1,13 +1,22 @@
 ﻿using BoardGameCollection.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Text;
 
 namespace BoardGameCollection.Data
 {
-    public class MyContext : DbContext
+    class CollectionContext : DbContext
     {
+        private readonly string _connectionString;
+
+        public CollectionContext(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Expansion>()
@@ -16,8 +25,7 @@ namespace BoardGameCollection.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(
-                "");
+            optionsBuilder.UseSqlServer(_connectionString);
         }
 
         public DbSet<BoardGame> BoardGames { get; set; }

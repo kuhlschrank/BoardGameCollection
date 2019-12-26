@@ -5,14 +5,16 @@ using CoreModels = BoardGameCollection.Core.Models;
 using System;
 using BoardGameCollection.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace BoardGameCollection.Data
 {
     public class BoardGameRepository : IBoardGameRepository
     {
         AutoMapper.IMapper _mapper;
+        private readonly string _connectionString;
 
-        public BoardGameRepository()
+        public BoardGameRepository(string connectionString)
         {
             _mapper = new AutoMapper.MapperConfiguration(cfg =>
             {
@@ -20,11 +22,12 @@ namespace BoardGameCollection.Data
                 .ForMember(d => d.ExpansionIds, o => o.MapFrom(s => s.Expansions.Select(e => e.ExpansionId).ToList()))
                 .ReverseMap();
             }).CreateMapper();
+            _connectionString = connectionString;
         }
 
         public IEnumerable<CoreModels.BoardGame> GetBoardGames(IEnumerable<int> ids)
         {
-            using (var db = new MyContext())
+            using (var db = new CollectionContext(_connectionString))
             {
                 var boardGames = db.BoardGames.Include(e => e.Expansions).Where(bg => ids.ToList().Contains(bg.Id)).ToList();
                 var models = _mapper.Map<List<BoardGame>, IEnumerable<CoreModels.BoardGame>>(boardGames);
@@ -34,7 +37,7 @@ namespace BoardGameCollection.Data
 
         public IEnumerable<CoreModels.BoardGame> GetNextBoardGamesToUpdate(int count, int minimumHoursPassed)
         {
-            using (var db = new MyContext())
+            using (var db = new CollectionContext(_connectionString))
             {
                 var minimumDate = DateTimeOffset.Now.AddHours(minimumHoursPassed);
                 var boardGames = db.BoardGames.Where(bg => bg.LastUpdate < minimumDate).OrderBy(bg => bg.LastUpdate).Take(count).ToList();
@@ -45,7 +48,7 @@ namespace BoardGameCollection.Data
 
         public void StoreBoardGames(IEnumerable<CoreModels.BoardGame> boardGames)
         {
-            using (var db = new MyContext())
+            using (var db = new CollectionContext(_connectionString))
             {
                 foreach (var boardGame in boardGames)
                 {
@@ -76,7 +79,7 @@ namespace BoardGameCollection.Data
 
         public void StoreUnknownIds(IEnumerable<int> unknownIds)
         {
-            using (var db = new MyContext())
+            using (var db = new CollectionContext(_connectionString))
             {
                 foreach (var id in unknownIds)
                 {
@@ -91,7 +94,7 @@ namespace BoardGameCollection.Data
 
         public int[] GetUnknownIds(int count)
         {
-            using (var db = new MyContext())
+            using (var db = new CollectionContext(_connectionString))
             {
                 return db.Unknowns.Take(count).Select(un => un.Id).ToArray();
             }
@@ -99,7 +102,7 @@ namespace BoardGameCollection.Data
 
         public void DeleteUnknownIds(IEnumerable<int> ids)
         {
-            using (var db = new MyContext())
+            using (var db = new CollectionContext(_connectionString))
             {
                 db.Unknowns.RemoveRange(db.Unknowns.Where(un => ids.Contains(un.Id)));
                 db.SaveChanges();
