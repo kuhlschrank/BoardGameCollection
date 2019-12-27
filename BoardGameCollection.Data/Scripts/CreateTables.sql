@@ -12,8 +12,8 @@ CREATE TABLE [dbo].[BoardGame](
 	[ImageUri] [nvarchar](2043) NULL,
 	[MinPlayers] [int] NULL,
 	[MaxPlayers] [int] NULL,
+	[SuggestedPlayerNumbers] [varchar](200) NULL,
 	[YearPublished] [int] NULL,
-	[BestPlayerNumber] [int] NULL,
 	[AverageRating] [float] NULL,
 	[LastUpdate] [datetimeoffset](7) NOT NULL,
  CONSTRAINT [PK_BoardGame] PRIMARY KEY CLUSTERED 

@@ -10,6 +10,9 @@ namespace BoardGameCollection.Web.Views
     {
         public static string BestPlayerCountTag(this BoardGame boardGame)
         {
+            if (boardGame == null || boardGame.SuggestedPlayerNumbers == null)
+                return "&nbsp;";
+
             return SuggestedPlayerCountTag(
                 boardGame.SuggestedPlayerNumbers.Where(n => !n.StartsWith('-')));
             
@@ -17,6 +20,9 @@ namespace BoardGameCollection.Web.Views
 
         public static string NotRecommendedPlayerCountTag(this BoardGame boardGame)
         {
+            if (boardGame == null || boardGame.SuggestedPlayerNumbers == null)
+                return "&nbsp;";
+
             return SuggestedPlayerCountTag(
                 boardGame.SuggestedPlayerNumbers
                     .Where(n => n.StartsWith('-'))
