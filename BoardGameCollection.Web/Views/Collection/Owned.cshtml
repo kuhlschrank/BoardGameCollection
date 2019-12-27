@@ -56,8 +56,8 @@
                     <div style="text-align:right">@ownedGame.BoardGame.MinPlayers&nbsp;-&nbsp;@ownedGame.BoardGame.MaxPlayers</div>
                 </td>
                 <td>
-                    <div style="font-size:x-small;margin-left:3px;color:lawngreen">@Html.Raw(@ownedGame.BoardGame.BestPlayerCountTag())</div>
-                    <div style="font-size:x-small;margin-left:3px;color:indianred">@Html.Raw(ownedGame.BoardGame.NotRecommendedPlayerCountTag())</div>
+                    <div style="font-size:x-small;margin-left:3px;color:forestgreen">@Html.Raw(@ownedGame.BoardGame.BestPlayerCountTag())</div>
+                    <div style="font-size:x-small;margin-left:3px;color:orangered">@Html.Raw(ownedGame.BoardGame.NotRecommendedPlayerCountTag())</div>
                 </td>
             </tr>
             foreach (var ownedExpansion in ownedGame.Expansions)

@@ -10,13 +10,34 @@ namespace BoardGameCollection.Web.Views
     {
         public static string BestPlayerCountTag(this BoardGame boardGame)
         {
-            var bestNumbers = boardGame.SuggestedPlayerNumbers.Where(n => !n.StartsWith('-'));
-            if (!bestNumbers.Any())
+            return SuggestedPlayerCountTag(
+                boardGame.SuggestedPlayerNumbers.Where(n => !n.StartsWith('-')));
+            
+        }
+
+        public static string NotRecommendedPlayerCountTag(this BoardGame boardGame)
+        {
+            return SuggestedPlayerCountTag(
+                boardGame.SuggestedPlayerNumbers
+                    .Where(n => n.StartsWith('-'))
+                    .Select(n => n.TrimStart('-')));
+        }
+
+        private static string SuggestedPlayerCountTag(IEnumerable<string> sanitizedPlayerNumbers)
+        {
+            if (!sanitizedPlayerNumbers.Any())
                 return "&nbsp;";
 
-            var numbers = bestNumbers
-                .Select(n => new { num = Int32.Parse(n.TrimEnd('+')), andSoOn = n.EndsWith('+'), original = n });
-            var orderedNumbers = numbers
+            var numbers = sanitizedPlayerNumbers
+                .Select(n => new { num = Int32.Parse(n.TrimEnd('+')), andSoOn = n.EndsWith('+') })
+                .ToList();
+
+            // for BGG "8+" means "more than 8"... not "8 or more"
+            var correctedNumbers = numbers
+                .Select(n => new { num = n.num, andSoOn = n.andSoOn, display = n.andSoOn ? $"{n.num + 1}+" : $"{n.num}" })
+                .ToList();
+
+            var orderedNumbers = correctedNumbers
                 .Where(n => n.andSoOn || !numbers.Any(other => other.num == n.num && other.andSoOn))
                 .OrderBy(n => n.num).ThenBy(n => n.andSoOn)
                 .ToList();
@@ -33,21 +54,16 @@ namespace BoardGameCollection.Web.Views
                 // close group, if any
                 if (currentGroupTo.num < number.num - 1)
                 {
-                    groups.Add((currentGroupFrom.original, currentGroupTo.original));
+                    groups.Add((currentGroupFrom.display, currentGroupTo.display));
                     currentGroupFrom = number;
                     currentGroupTo = number;
                 }
             }
             // close last group
-            groups.Add((currentGroupFrom.original, currentGroupTo.original));
+            groups.Add((currentGroupFrom.display, currentGroupTo.display));
             var groupStrings = groups.Select(g => g.from != g.to ? $"{g.from} - {g.to}" : g.from);
 
             return string.Join("|", string.Join(", ", groupStrings));
-        }
-
-        public static string NotRecommendedPlayerCountTag(this BoardGame boardGame)
-        {
-            return "&nbsp;";
         }
     }
 }
