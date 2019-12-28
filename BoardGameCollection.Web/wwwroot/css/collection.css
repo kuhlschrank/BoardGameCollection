@@ -1,4 +1,30 @@
-﻿.playerNumbersContainer {
+﻿.game-table th {
+    font-size: small;
+    font-weight: normal;
+}
+    .game-table th.group-header {
+        font-size: unset;
+        font-weight: bold;
+        border-bottom: solid 1px;
+        text-align: center;
+    }
+
+.right {
+    text-align: right;
+}
+
+.playerGrid {
+    width: 38px;
+    margin: 0 4px;
+}
+@media (min-width: 768px) {
+    .playerGrid {
+        width: 45px;
+        margin: 0 5px;
+    }
+}
+
+.playerNumbersContainer {
     display: flex;
     flex-direction: row;
 }
@@ -8,13 +34,10 @@
     }
 
 .minMaxContainer {
-    width: 45px;
     text-align: right;
-    margin: 0 10px;
 }
 
 .suggestContainer {
-    width: 45px;
     display: flex;
     flex-direction: column;
     font-size: x-small;

@@ -11,24 +11,24 @@
 
 <h2>Spiele von @owners</h2>
 
-<table>
+<table class="game-table">
     @foreach (var yearGroup in Model.GroupBy(p => new { Year = p.BoardGame.YearPublished }).OrderByDescending(group => group.Key.Year))
     {
         <tr>
-            <th colspan="3" style="border-bottom: dashed 1px; text-align: center">
-                <span>@yearGroup.Key.Year</span>
+            <th colspan="3" class="group-header">
+                <div>@yearGroup.Key.Year</div>
             </th>
         </tr>
         <tr>
             <th></th>
             <th>
-                <small>Titel</small>
+                <div>Titel</div>
             </th>
             <th>
-                <small>Spieler</small>
+                <div class="playerGrid right">Spieler</div>
             </th>
         </tr>
-        foreach (var ownedGame in yearGroup.OrderByDescending(p => p.BoardGame.AverageRating))
+        @foreach (var ownedGame in yearGroup.OrderByDescending(p => p.BoardGame.AverageRating))
         {
             <tr>
                 @{ var rowspan = ownedGame.Expansions.Count + 1; }

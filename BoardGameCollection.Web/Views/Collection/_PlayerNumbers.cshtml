@@ -3,15 +3,15 @@
 @model BoardGameCollection.Core.Models.BoardGame
 @{
     var reduced = ViewData.ContainsKey("reduced");
-    var playerNumbersContainer = $"playerNumbersContainer{(reduced ? " reduced" : "")}";
+    var reducedClass = reduced ? "reduced" : "";
 }
 
 
-<div class="@playerNumbersContainer">
-    <span class="minMaxContainer">@Model.MinPlayers-@Model.MaxPlayers</span>
+<div class="playerNumbersContainer @reducedClass">
+    <span class="minMaxContainer playerGrid">@Model.MinPlayers-@Model.MaxPlayers</span>
     @if (!reduced)
     {
-        <div class="suggestContainer">
+        <div class="suggestContainer playerGrid">
             <span class="best">@Html.Raw(Model.BestPlayerCountTag())</span>
             <span class="worst">@Html.Raw(Model.NotRecommendedPlayerCountTag())</span>
         </div>

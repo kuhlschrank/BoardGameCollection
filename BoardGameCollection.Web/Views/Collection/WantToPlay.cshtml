@@ -23,24 +23,24 @@
 
 <h2>Spielwünsche von @owners</h2>
 
-<table>
+<table class="game-table">
     @foreach (var group in gamePlayWantages.GroupBy(p => new { OwnersCount = p.Owners.Count, OwnersName = p.Owners.Count > 1 ? string.Format("{0} Spieler", p.Owners.Count) : string.Format("nur {0}", p.Owners.First()) }).OrderByDescending(c => c.Key.OwnersCount))
     {
         <tr>
-            <th colspan="3" style="border-bottom: dashed 1px; text-align: center">
-                <span>@group.Key.OwnersName</span>
+            <th colspan="3" class="group-header">
+                <div>@group.Key.OwnersName</div>
             </th>
         </tr>
         <tr>
             <th></th>
             <th>
-                <small>Titel</small>
+                <div>Titel</div>
             </th>
-            <th colspan="2">
-                <small>Spieler</small>
+            <th>
+                <div class="playerGrid right">Spieler</div>
             </th>
         </tr>
-        foreach (var playWantage in group.OrderByDescending(p => p.LastModified))
+        @foreach (var playWantage in group.OrderByDescending(p => p.LastModified))
         {
             var item = playWantage.BoardGame;
             <tr>
