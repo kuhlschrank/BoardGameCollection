@@ -1,0 +1,29 @@
+﻿.playerNumbersContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+    .playerNumbersContainer.reduced {
+        font-size: small;
+    }
+
+.minMaxContainer {
+    width: 45px;
+    text-align: right;
+    margin: 0 10px;
+}
+
+.suggestContainer {
+    width: 45px;
+    display: flex;
+    flex-direction: column;
+    font-size: x-small;
+}
+
+    .suggestContainer .best {
+        color: forestgreen;
+    }
+
+    .suggestContainer .worst {
+        color: orangered;
+    }

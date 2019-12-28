@@ -1,0 +1,19 @@
+﻿@using BoardGameCollection.Web.Views
+
+@model BoardGameCollection.Core.Models.BoardGame
+@{
+    var reduced = ViewData.ContainsKey("reduced");
+    var playerNumbersContainer = $"playerNumbersContainer{(reduced ? " reduced" : "")}";
+}
+
+
+<div class="@playerNumbersContainer">
+    <span class="minMaxContainer">@Model.MinPlayers-@Model.MaxPlayers</span>
+    @if (!reduced)
+    {
+        <div class="suggestContainer">
+            <span class="best">@Html.Raw(Model.BestPlayerCountTag())</span>
+            <span class="worst">@Html.Raw(Model.NotRecommendedPlayerCountTag())</span>
+        </div>
+    }
+</div>

@@ -24,7 +24,7 @@
             <th>
                 <small>Titel</small>
             </th>
-            <th colspan="2">
+            <th>
                 <small>Spieler</small>
             </th>
         </tr>
@@ -53,21 +53,20 @@
                     </table>
                 </td>
                 <td>
-                    <div style="text-align:right">@ownedGame.BoardGame.MinPlayers&nbsp;-&nbsp;@ownedGame.BoardGame.MaxPlayers</div>
-                </td>
-                <td>
-                    <div style="font-size:x-small;margin-left:3px;color:forestgreen">@Html.Raw(@ownedGame.BoardGame.BestPlayerCountTag())</div>
-                    <div style="font-size:x-small;margin-left:3px;color:orangered">@Html.Raw(ownedGame.BoardGame.NotRecommendedPlayerCountTag())</div>
+                    <partial name="_PlayerNumbers" model="ownedGame.BoardGame" />
                 </td>
             </tr>
-            foreach (var ownedExpansion in ownedGame.Expansions)
-            {
+                    foreach (var ownedExpansion in ownedGame.Expansions)
+                    {
                 <tr>
                     <td>
                         <small><a target="_blank" href="http://boardgamegeek.com/boardgame/@ownedExpansion.BoardGame.Id" style="text-decoration: none">@ownedExpansion.BoardGame.Title</a> (@string.Format(CultureInfo.InvariantCulture, "{0:0.00}", ownedExpansion.BoardGame.AverageRating))</small>
                     </td>
                     <td>
-                        <div style="text-align:right;font-size:small">@ownedGame.BoardGame.MinPlayers&nbsp;-&nbsp;@ownedGame.BoardGame.MaxPlayers</div>
+                        @{
+                            var testViewData = new ViewDataDictionary(ViewData) { { "reduced", true } };
+                        }
+                        <partial name="_PlayerNumbers" model="ownedExpansion.BoardGame" view-data="testViewData" />
                     </td>
                 </tr>
             }

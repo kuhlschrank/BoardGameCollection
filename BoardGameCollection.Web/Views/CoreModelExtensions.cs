@@ -67,9 +67,9 @@ namespace BoardGameCollection.Web.Views
             }
             // close last group
             groups.Add((currentGroupFrom.display, currentGroupTo.display));
-            var groupStrings = groups.Select(g => g.from != g.to ? $"{g.from} - {g.to}" : g.from);
+            var groupStrings = groups.Select(g => g.from != g.to ? $"{g.from}-{g.to}" : g.from);
 
-            return string.Join("|", string.Join(", ", groupStrings));
+            return string.Join(", ", groupStrings);
         }
     }
 }
