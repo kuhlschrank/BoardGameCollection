@@ -1,4 +1,8 @@
-﻿.game-table th {
+﻿.game-table {
+    width: 100%;
+    max-width: 800px;
+}
+.game-table th {
     font-size: small;
     font-weight: normal;
 }
