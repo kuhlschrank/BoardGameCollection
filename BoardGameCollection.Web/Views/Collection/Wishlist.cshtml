@@ -21,20 +21,8 @@
 <table class="game-table">
     @foreach (var group in Model.GroupBy(p => new { p.Priority, PriorityName = priorities[p.Priority] }).OrderBy(group => group.Key.Priority))
     {
-        <tr>
-            <th colspan="3" class="group-header">
-                <div>@group.Key.Priority - @group.Key.PriorityName</div>
-            </th>
-        </tr>
-        <tr>
-            <th></th>
-            <th>
-                <div>Titel</div>
-            </th>
-            <th>
-                <div class="playerGrid right">Spieler</div>
-            </th>
-        </tr>
+        var groupName = $"{group.Key.Priority} - {group.Key.PriorityName}";
+        <partial name="_GameTableGroupHeader" model="@groupName" />
         @foreach (var boardGameGrouping in group.GroupBy(g => g.BoardGame).OrderByDescending(p => p.Key.AverageRating))
         {
             var item = boardGameGrouping.Key;

@@ -14,20 +14,7 @@
 <table class="game-table">
     @foreach (var yearGroup in Model.GroupBy(p => new { Year = p.BoardGame.YearPublished }).OrderByDescending(group => group.Key.Year))
     {
-        <tr>
-            <th colspan="3" class="group-header">
-                <div>@yearGroup.Key.Year</div>
-            </th>
-        </tr>
-        <tr>
-            <th></th>
-            <th>
-                <div>Titel</div>
-            </th>
-            <th>
-                <div class="playerGrid right">Spieler</div>
-            </th>
-        </tr>
+        <partial name="_GameTableGroupHeader" model="@yearGroup.Key.Year.ToString()" />
         @foreach (var ownedGame in yearGroup.OrderByDescending(p => p.BoardGame.AverageRating))
         {
             <tr>
@@ -56,8 +43,8 @@
                     <partial name="_PlayerNumbers" model="ownedGame.BoardGame" />
                 </td>
             </tr>
-                    foreach (var ownedExpansion in ownedGame.Expansions)
-                    {
+            foreach (var ownedExpansion in ownedGame.Expansions)
+            {
                 <tr>
                     <td>
                         <small><a target="_blank" href="http://boardgamegeek.com/boardgame/@ownedExpansion.BoardGame.Id" style="text-decoration: none">@ownedExpansion.BoardGame.Title</a> (@string.Format(CultureInfo.InvariantCulture, "{0:0.00}", ownedExpansion.BoardGame.AverageRating))</small>
