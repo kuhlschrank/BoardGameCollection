@@ -1,4 +1,8 @@
-﻿main {
+﻿.right {
+    text-align: right;
+}
+
+main {
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -10,7 +14,7 @@ header nav .container {
 }
 
 .game-table {
-    width: 100%;
+    width: 95%;
     max-width: 800px;
 }
 .game-table th {
@@ -24,9 +28,11 @@ header nav .container {
         text-align: center;
     }
 
-.right {
-    text-align: right;
-}
+    .game-table img {
+        height: 50px;
+        max-width: 75px;
+        margin-right: 5px;
+    }
 
 .playerGrid {
     width: 38px;
