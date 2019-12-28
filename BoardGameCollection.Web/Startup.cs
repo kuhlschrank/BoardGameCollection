@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 using BoardGameCollection.Core.Services;
 using BoardGameCollection.Data;
 using BoardGameCollection.Domain;
@@ -63,7 +62,7 @@ namespace BoardGameCollection.Web
                 endpoints.MapControllerRoute(
                     name: "Collections",                    
                     pattern: "{controller}/{action}/{username}",
-                    defaults: new { controller = "Collection", action = "Owned", username = UrlParameter.Optional }
+                    defaults: new { controller = "Collection", action = "Owned", username = "" }
                     );
             });
         }
