@@ -1,4 +1,15 @@
-﻿.game-table {
+﻿main {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+header nav .container {
+    background-color: whitesmoke;
+    border-radius: 20px;
+}
+
+.game-table {
     width: 100%;
     max-width: 800px;
 }
