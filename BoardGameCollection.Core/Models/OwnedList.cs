@@ -6,7 +6,7 @@ using BoardGameCollection.Core.Models;
 
 namespace BoardGameCollection.Core.Models
 {
-    public class OwnedEntry
+    public class OwnedEntry : IHasBoardGame
     {
         public BoardGame BoardGame { get; set; }
         public string Owner { get; set; }

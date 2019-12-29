@@ -123,6 +123,7 @@ namespace BoardGameCollection.Geeknector
 
         private BoardGame ParseBoardGameThing(XElement node)
         {
+            var type = node.Attribute("type").Value;
             var idNode = node.Attribute(XName.Get("id"));
             var typeNode = node.Attribute(XName.Get("type"));
             var titleNode = node.Elements(XName.Get("name")).FirstOrDefault(x => x.Attribute(XName.Get("type")).Value == "primary").Attribute(XName.Get("value"));
@@ -145,6 +146,7 @@ namespace BoardGameCollection.Geeknector
             var boardGame = new BoardGame
             {
                 Id = idNode == null ? 0 : Int32.Parse(idNode.Value),
+                IsExpansion = type == "boardgameexpansion",
                 Title = titleNode == null ? "" : titleNode.Value,
                 MinPlayers = minPlayersNode == null ? -1 : Int32.Parse(minPlayersNode.Value),
                 MaxPlayers = maxPlayersNode == null ? 99 : Int32.Parse(maxPlayersNode.Value),

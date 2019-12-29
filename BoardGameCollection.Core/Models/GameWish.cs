@@ -6,7 +6,7 @@ using BoardGameCollection.Core.Models;
 
 namespace BoardGameCollection.Core.Models
 {
-    public class GameWish
+    public class GameWish : IHasBoardGame
     {
         public BoardGame BoardGame { get; set; }
         public int Priority { get; set; }

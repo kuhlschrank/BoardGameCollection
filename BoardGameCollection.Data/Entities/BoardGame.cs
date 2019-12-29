@@ -15,6 +15,7 @@ namespace BoardGameCollection.Data.Entities
 
         [Key]
         public int Id { get; set; }
+        public bool IsExpansion { get; set; }
         public string Title { get; set; }
         public string ThumbnailUri { get; set; }
         public string ImageUri { get; set; }
