@@ -8,9 +8,20 @@ main {
     flex-direction: column;
 }
 
+main .page-body {
+    width: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
 header nav .container {
     background-color: whitesmoke;
     border-radius: 20px;
+}
+
+.player-filter {
+    display: flex;
 }
 
 .game-table {

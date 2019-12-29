@@ -37,7 +37,16 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            @RenderBody()
+            <div class="player-filter" style="display:flex;">
+                <span class="nav-link text-dark">best with:</span>
+                @foreach (var bestWith in Enumerable.Range(2, 7))
+                {
+                    <a class="nav-link text-dark" href="?bestWith=@bestWith">@bestWith</a>
+                }
+            </div>
+            <div class="page-body">
+                @RenderBody()
+            </div>
         </main>
     </div>
 
