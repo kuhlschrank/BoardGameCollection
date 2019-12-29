@@ -24,6 +24,10 @@ header nav .container {
     display: flex;
 }
 
+.player-filter .active {
+    font-weight: bold;
+}
+
 .game-table {
     width: 95%;
     max-width: 800px;
