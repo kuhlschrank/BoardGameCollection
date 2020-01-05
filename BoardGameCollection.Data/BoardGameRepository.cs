@@ -67,14 +67,13 @@ namespace BoardGameCollection.Data
                     entity.YearPublished = boardGame.YearPublished;
                     entity.SuggestedPlayerNumbers = string.Join(";", boardGame.SuggestedPlayerNumbers);
                     entity.AverageRating = boardGame.AverageRating;
-                    entity.LastUpdate = DateTime.Now;
+                    entity.LastUpdate = DateTimeOffset.Now;
                     entity.IsExpansion = boardGame.IsExpansion;
 
                     entity.Expansions.Clear();
                     foreach (var expansionId in boardGame.ExpansionIds)
                         entity.Expansions.Add(new Expansion { ExpansionId = expansionId });
                 }
-
                 db.SaveChanges();
             }
         }

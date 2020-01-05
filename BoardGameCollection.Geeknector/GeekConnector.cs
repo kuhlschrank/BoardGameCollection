@@ -15,6 +15,8 @@ namespace BoardGameCollection.Geeknector
 {
     public class GeekConnector : IGeekConnector
     {
+        private const string baseUrl = "http://boardgamegeek.com/xmlapi2";
+
         //<item collid="19005529" subtype="boardgame" objectid="105551" objecttype="thing">
         //    <name sortindex="1">Archipelago</name>
         //    <status lastmodified="2013-04-22 17:04:29" preordered="0" wishlist="1" wanttobuy="0" wanttoplay="0" want="0" fortrade="0" prevowned="0" own="0" wishlistpriority="2"/>
@@ -62,7 +64,7 @@ namespace BoardGameCollection.Geeknector
             var tries = 3; // der Geek liefert manchmal für eine Anfrage keine Daten...
             while (true)
             {
-                var request = WebRequest.Create(string.Format("http://boardgamegeek.com/xmlapi2/collection?brief={2}&username={0}&{1}=1", username, listType, brief));
+                var request = WebRequest.Create($"{baseUrl}/collection?brief={brief}&username={username}&{listType}=1");
                 var response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode != HttpStatusCode.OK && tries > 0)
                 {
@@ -120,6 +122,90 @@ namespace BoardGameCollection.Geeknector
             return tasks.SelectMany(task => task.Result).ToList();
 
         }
+
+        public IEnumerable<Play> RetrievePlays(string username)
+        {
+            var page = 1;
+            var result = new List<Play>();
+            while (true)
+            {
+                var request = WebRequest.Create($"{baseUrl}/plays?username={username}&page={page++}");
+                var response = (HttpWebResponse)request.GetResponse();
+
+                string responseString;
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                    responseString = reader.ReadToEnd();
+                var doc = XDocument.Parse(responseString);
+                XElement root = doc.Root;
+
+                var items = (from child in root.Elements(XName.Get("play")) select child).ToList();
+                var plays = items.Select(ParsePlay);
+                result.AddRange(plays);
+
+                if (items.Count < 100)
+                    break;
+            }   
+            return result;
+        }
+
+        //       <plays username="kuhlschrank" userid="537399" total="921" page="1" termsofuse="https://boardgamegeek.com/xmlapi/termsofuse">
+        //<play id="39975044" date="2020-01-03" quantity="1" length="0" incomplete="0" nowinstats="0" location="Andreas">
+        //	<item name="Cartographers: A Roll Player Tale" objecttype="thing" objectid="263918">
+        //		<subtypes>
+        //			<subtype value="boardgame" />
+        //		</subtypes>
+        //	</item>
+        //	<comments> #bgstats</comments>
+        //	<players>
+        //		<player username="kuhlschrank" userid="537399" name="Florian" startposition="" color="" score="73" new="0" rating="0" win="0" />
+        //		<player username="the_happy_llama" userid="1155117" name="Thomas" startposition="" color="" score="69" new="1" rating="0" win="0" />
+        //		<player username="" userid="0" name="Stefan" startposition="" color="" score="86" new="1" rating="0" win="1" />
+        //		<player username="" userid="0" name="Toni" startposition="" color="" score="78" new="1" rating="0" win="0" />
+        //		<player username="cemon" userid="555492" name="Andreas" startposition="" color="" score="79" new="1" rating="0" win="0" />
+        //	</players>
+        //</play>
+        private Play ParsePlay(XElement node)
+        {
+            try
+            {
+                var itemNode = node.Element("item");
+                return new Play
+                {
+                    Id = Int64.Parse(node.Attribute("id").Value),
+                    BoardGameId = Int32.Parse(itemNode.Attribute("objectid").Value),
+                    BoardGameName = itemNode.Attribute("name").Value,
+                    Date = DateTime.Parse(node.Attribute("date").Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal),
+                    IgnoreForStatistics = node.Attribute("nowinstats").Value == "1",
+                    Location = NullIfEmpty(node.Attribute("location").Value),
+                    Quantity = Int32.Parse(node.Attribute("quantity").Value),
+                    Comments = NullIfEmpty(node.Element("comments")?.Value),
+                    Players = node.Element("players").Elements("player").Select(playerNode =>
+                    {
+                        decimal scoreResult;
+                        var hasScore = decimal.TryParse(playerNode.Attribute("score").Value, out scoreResult);
+
+                        var userId = playerNode.Attribute("userid")?.Value;
+                        return new PlayerPlayStats
+                        {
+                            Name = playerNode.Attribute("name").Value,
+                            UserId = !string.IsNullOrEmpty(userId) ? (int?)Int32.Parse(userId) : null,
+                            Username = NullIfEmpty(playerNode.Attribute("username").Value),
+                            Color = NullIfEmpty(playerNode.Attribute("color").Value),
+                            New = playerNode.Attribute("new").Value == "1",
+                            Win = playerNode.Attribute("win").Value == "1",
+                            Score = hasScore ? (decimal?)scoreResult : null
+                        };
+                    }).ToList()
+                };
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                throw;
+            }
+        }
+
+        private static string NullIfEmpty(string input) => string.IsNullOrEmpty(input) ? null : input;
 
         private BoardGame ParseBoardGameThing(XElement node)
         {
@@ -196,7 +282,7 @@ namespace BoardGameCollection.Geeknector
                 var maxResults = validResults.Where(r => r.numvotes == maxVotes).ToList();
                 if (maxResults.Count > 1)
                     continue;
-                
+
                 var result = maxResults.First(r => r.numvotes == maxVotes);
                 if (result.value == "Best")
                     suggestedPlayerNumbers.Add(numPlayers);

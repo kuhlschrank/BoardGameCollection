@@ -36,7 +36,8 @@ namespace BoardGameCollection.Crawler
 
         public async Task ExecuteAsync()
         {
-            CrawlOnce();
+            var res = _geekConnector.RetrievePlays("kuhlschrank");
+            //CrawlOnce();
             await Task.CompletedTask;
         }
 
