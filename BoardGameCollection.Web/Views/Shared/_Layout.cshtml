@@ -26,6 +26,7 @@
                              ("Alle", "Owned", ""),
                              ("Wunschlisten", "Wishlist", ""),
                              ("Spielewünsche", "WantToPlay", ""),
+                             ("Gespielt", "Plays", null)
                          })
                         {
                             <li class="nav-item">@Html.ActionLink(link.displayName, link.actionName, new { username = link.userName }, new { @class = "nav-link text-dark" })</li>

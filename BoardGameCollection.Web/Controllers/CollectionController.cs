@@ -43,6 +43,11 @@ namespace BoardGameCollection.Web.Controllers
             return View(GetGameList((manager, s) => manager.GetWantToPlayGames(s), username, bestWith));
         }
 
+        public ActionResult Plays([FromQuery] int? bestWith)
+        {
+            return View(GetGameList((manager, s) => manager.GetBoardGamePlays(), "kuhlschrank", bestWith));
+        }
+
         private IEnumerable<T> GetGameList<T>(Func<IBoardGameManager, string, IEnumerable<T>> listDelegate, string username, int? bestWith = null) where T : IHasBoardGame
         {
             var list = new List<T>();

@@ -12,5 +12,6 @@ namespace BoardGameCollection.Core.Services
         IEnumerable<GamePossession> GetGamePossessions(string username);
         IEnumerable<GameWish> GetGameWishlist(string username);
         IEnumerable<WantToPlayGame> GetWantToPlayGames(string username);
+        IEnumerable<BoardGamePlay> GetBoardGamePlays();
     }
 }

@@ -11,10 +11,12 @@ namespace BoardGameCollection.Core.Services
     {
         void StoreBoardGames(IEnumerable<BoardGame> boardGames);
         void StoreUnknownIds(IEnumerable<int> unknownIds);
-        void StorePlays(IEnumerable<Play> plays);
         IEnumerable<BoardGame> GetBoardGames(IEnumerable<int> ids);
         IEnumerable<BoardGame> GetNextBoardGamesToUpdate(int count, int minimumHoursPassed);
         int[] GetUnknownIds(int count);
         void DeleteUnknownIds(IEnumerable<int> ids);
+
+        IEnumerable<Play> GetAllPlays();
+        void StorePlays(IEnumerable<Play> plays);
     }
 }

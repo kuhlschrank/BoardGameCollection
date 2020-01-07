@@ -1,5 +1,17 @@
-﻿.right {
+﻿.small {
+    font-size: small;
+}
+
+.smaller {
+    font-size: smaller;
+}
+
+.right {
     text-align: right;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 main {

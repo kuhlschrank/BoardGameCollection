@@ -22,6 +22,9 @@ namespace BoardGameCollection.Data
                 .ForMember(d => d.ExpansionIds, o => o.MapFrom(s => s.Expansions.Select(e => e.ExpansionId).ToList()))
                 .ForMember(d => d.SuggestedPlayerNumbers, o => o.MapFrom(s => (s.SuggestedPlayerNumbers ?? "")
                     .Split(';', StringSplitOptions.RemoveEmptyEntries)));
+
+                cfg.CreateMap<Play, CoreModels.Play>();
+                cfg.CreateMap<PlayPlayer, CoreModels.PlayPlayer>();
             }).CreateMapper();
             _connectionString = configuration.GetConnectionString("CollectionContext");
         }
@@ -75,6 +78,16 @@ namespace BoardGameCollection.Data
                         entity.Expansions.Add(new Expansion { ExpansionId = expansionId });
                 }
                 db.SaveChanges();
+            }
+        }
+
+        public IEnumerable<CoreModels.Play> GetAllPlays()
+        {
+            using (var db = new CollectionContext(_connectionString))
+            {
+                var plays = db.Plays.Include(e => e.Players).ToList();
+                var models = _mapper.Map<List<Play>, IEnumerable<CoreModels.Play>>(plays);
+                return models;
             }
         }
 

@@ -16,4 +16,10 @@ namespace BoardGameCollection.Core.Models
         public string Location { get; set; }
         public List<PlayPlayer> Players { get; set; }
     }
+
+    public class BoardGamePlay : IHasBoardGame
+    {
+        public BoardGame BoardGame { get; set; }
+        public Play Play { get; set; }
+    }
 }

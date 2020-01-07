@@ -74,6 +74,24 @@ namespace BoardGameCollection.Domain
             });
         }
 
+        public IEnumerable<BoardGamePlay> GetBoardGamePlays()
+        {
+            var plays = _boardGameRepository.GetAllPlays();
+            var games = _boardGameRepository.GetBoardGames(plays.Select(i => i.BoardGameId)).ToList();
+
+            var missingIds = plays.Select(p => p.BoardGameId).Except(games.Select(g => g.Id)).ToList();
+            games.AddRange(missingIds.Select(id => new BoardGame { Id = id, Title = $"Board Game {id} loading..." }));
+
+
+            foreach (var a in missingIds.Distinct().OrderBy(a => a))
+                Console.WriteLine(a);
+
+            _boardGameRepository.StoreUnknownIds(missingIds);
+
+            return plays.Select(play => new BoardGamePlay { Play = play, BoardGame = games.SingleOrDefault(g => g.Id == play.BoardGameId) });
+        }
+
+
         private BoardGame CreateDummyGame(BoardGameId id)
         {
             return new BoardGame
