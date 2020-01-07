@@ -78,6 +78,50 @@ namespace BoardGameCollection.Data
             }
         }
 
+        public void StorePlays(IEnumerable<CoreModels.Play> plays)
+        {
+            using (var db = new CollectionContext(_connectionString))
+            {
+                var count = 0;
+                foreach (var play in plays)
+                {
+                    var entity = db.Plays.Include(e => e.Players).SingleOrDefault(p => p.Id == play.Id);
+                    if (entity == null)
+                    {
+                        entity = new Play() { Id = play.Id };
+                        db.Plays.Add(entity);
+                    }
+
+                    entity.BoardGameId = play.BoardGameId;
+                    entity.Comments = play.Comments;
+                    entity.Date = play.Date;
+                    entity.IgnoreForStatistics = play.IgnoreForStatistics;
+                    entity.Location = play.Location;
+                    entity.Quantity = play.Quantity;
+
+                    entity.Players.Clear();
+                    foreach (var player in play.Players)
+                        entity.Players.Add(new PlayPlayer
+                        {
+                            Position = player.Position,
+                            Name = player.Name,
+                            Username = player.Username,
+                            UserId = player.UserId,
+                            Score = player.Score,
+                            Color = player.Color,
+                            New = player.New,
+                            Win = player.Win
+                        });
+                    if (++count >= 25)
+                    {
+                        db.SaveChanges();
+                        count = 0;
+                    }
+                }
+                db.SaveChanges();
+            }
+        }
+
         public void StoreUnknownIds(IEnumerable<int> unknownIds)
         {
             using (var db = new CollectionContext(_connectionString))

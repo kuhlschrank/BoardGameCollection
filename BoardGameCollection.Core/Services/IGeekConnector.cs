@@ -16,6 +16,7 @@ namespace BoardGameCollection.Core.Services
         IEnumerable<WantToPlayId> GetWantToPlayGameIds(string username);
 
         IEnumerable<BoardGame> RetrieveBoardGames(int[] ids);
-        IEnumerable<Play> RetrievePlays(string username);
+
+        IEnumerable<Play> GetPlays(string username);
     }
 }

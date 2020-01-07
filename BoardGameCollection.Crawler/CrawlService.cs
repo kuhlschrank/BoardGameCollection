@@ -15,6 +15,8 @@ namespace BoardGameCollection.Crawler
         private readonly IBoardGameRepository _repository;
         private readonly IGeekConnector _geekConnector;
 
+        private DateTimeOffset _lastTimeAllPlays = DateTimeOffset.MinValue;
+
         public CrawlService(IBoardGameRepository repository, IGeekConnector geekConnector)
         {
             _repository = repository;
@@ -36,8 +38,7 @@ namespace BoardGameCollection.Crawler
 
         public async Task ExecuteAsync()
         {
-            var res = _geekConnector.RetrievePlays("kuhlschrank");
-            //CrawlOnce();
+            CrawlOnce();
             await Task.CompletedTask;
         }
 
@@ -50,6 +51,7 @@ namespace BoardGameCollection.Crawler
         {
             CrawlOnceUnknown(500);
             CrawlOnceKnown(20, 48);
+            CrawlAllPlays(24);
         }
 
         private void CrawlOnceUnknown(int maxCount)
@@ -75,6 +77,18 @@ namespace BoardGameCollection.Crawler
                 Log($"{boardGames.Count()} boardgames updated.");
                 _repository.StoreBoardGames(boardGames);
             }
+        }
+
+        private void CrawlAllPlays(int minimumHoursPassed)
+        {
+            if (_lastTimeAllPlays.AddHours(minimumHoursPassed) > DateTimeOffset.Now)
+                return;
+
+            var plays = _geekConnector.GetPlays("kuhlschrank");
+            Log($"{plays.Count()} plays found.");
+            _repository.StorePlays(plays);
+            Log($"{plays.Count()} plays updated.");
+            _lastTimeAllPlays = DateTimeOffset.Now;
         }
 
         static void Log(object message)

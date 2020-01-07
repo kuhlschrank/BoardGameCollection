@@ -21,6 +21,8 @@ namespace BoardGameCollection.Data
         {
             modelBuilder.Entity<Expansion>()
                 .HasKey(e => new { e.BoardGameId, e.ExpansionId });
+            modelBuilder.Entity<PlayPlayer>()
+                .HasKey(e => new { e.PlayId, e.Position });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -32,5 +34,7 @@ namespace BoardGameCollection.Data
         public DbSet<Expansion> Expansions { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Unknown> Unknowns { get; set; }
+        public DbSet<Play> Plays { get; set; }
+        public DbSet<PlayPlayer> PlayPlayers { get; set; }
     }
 }

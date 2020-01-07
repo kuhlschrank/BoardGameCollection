@@ -123,7 +123,7 @@ namespace BoardGameCollection.Geeknector
 
         }
 
-        public IEnumerable<Play> RetrievePlays(string username)
+        public IEnumerable<Play> GetPlays(string username)
         {
             var page = 1;
             var result = new List<Play>();
@@ -169,6 +169,7 @@ namespace BoardGameCollection.Geeknector
             try
             {
                 var itemNode = node.Element("item");
+                var position = 0;
                 return new Play
                 {
                     Id = Int64.Parse(node.Attribute("id").Value),
@@ -185,8 +186,9 @@ namespace BoardGameCollection.Geeknector
                         var hasScore = decimal.TryParse(playerNode.Attribute("score").Value, out scoreResult);
 
                         var userId = playerNode.Attribute("userid")?.Value;
-                        return new PlayerPlayStats
+                        return new PlayPlayer
                         {
+                            Position = position++,
                             Name = playerNode.Attribute("name").Value,
                             UserId = !string.IsNullOrEmpty(userId) ? (int?)Int32.Parse(userId) : null,
                             Username = NullIfEmpty(playerNode.Attribute("username").Value),
