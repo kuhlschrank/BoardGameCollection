@@ -179,7 +179,7 @@ namespace BoardGameCollection.Geeknector
                     IgnoreForStatistics = node.Attribute("nowinstats").Value == "1",
                     Location = NullIfEmpty(node.Attribute("location").Value),
                     Quantity = Int32.Parse(node.Attribute("quantity").Value),
-                    Comments = NullIfEmpty(node.Element("comments")?.Value),
+                    Comments = RemoveTail(NullIfEmpty(node.Element("comments")?.Value), " #bgstats"),
                     Players = node.Element("players").Elements("player").Select(playerNode =>
                     {
                         decimal scoreResult;
@@ -208,6 +208,7 @@ namespace BoardGameCollection.Geeknector
         }
 
         private static string NullIfEmpty(string input) => string.IsNullOrEmpty(input) ? null : input;
+        private static string RemoveTail(string input, string tail) => input != null && input.EndsWith(tail) ? (input == tail ? null : input.Substring(0, input.Length - tail.Length)) : input;
 
         private BoardGame ParseBoardGameThing(XElement node)
         {

@@ -14,7 +14,8 @@
 <table class="game-table">
     @foreach (var yearGroup in Model.GroupBy(p => new { Year = p.BoardGame.YearPublished }).OrderByDescending(group => group.Key.Year))
     {
-        <partial name="_GameTableGroupHeader" model="@yearGroup.Key.Year.ToString()" />
+        var headerModel = new GameTableGroupHeaderModel(yearGroup.Key.Year.ToString());
+        <partial name="_GameTableGroupHeader" model="headerModel" />
         @foreach (var ownedGame in yearGroup.OrderByDescending(p => p.BoardGame.AverageRating))
         {
             <tr>

@@ -1,16 +1,16 @@
-﻿@model System.String
+﻿@model BoardGameCollection.Web.Models.GameTableGroupHeaderModel
 
 <tr>
     <th colspan="3" class="group-header">
-        <div>@Model</div>
+        <div>@Model.Caption</div>
     </th>
 </tr>
 <tr>
     <th></th>
     <th>
-        <div>Titel</div>
+        <div>@Model.Left</div>
     </th>
     <th>
-        <div class="playerGrid right">Spieler</div>
+        <div class="playerGrid right">@Model.Right</div>
     </th>
 </tr>

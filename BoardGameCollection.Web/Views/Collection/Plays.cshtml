@@ -13,8 +13,8 @@
 <table class="game-table">
     @foreach (var dayGroup in Model.GroupBy(p => p.Play.Date.Date).OrderByDescending(group => group.Key))
     {
-        var groupName = dayGroup.Key.ToString("D");
-        <partial name="_GameTableGroupHeader" model="@groupName" />
+        var headerModel = new GameTableGroupHeaderModel(dayGroup.Key.ToString("D"), right: "Ort");
+        <partial name="_GameTableGroupHeader" model="headerModel" />
         @foreach (var boardGamePlay in dayGroup.OrderByDescending(p => p.Play.Date))
         {
             <tr>
@@ -28,9 +28,23 @@
                         <tr>
                             <td>
                                 <a target="_blank" href="http://boardgamegeek.com/boardgame/@boardGamePlay.BoardGame.Id" style="text-decoration: none">@Html.DisplayFor(modelItem => boardGamePlay.BoardGame.Title)</a> (@string.Format(CultureInfo.InvariantCulture, "{0:0.00}", boardGamePlay.BoardGame.AverageRating))
-                            </td>
-                            <td style="text-align: right">
-                                @foreach (var player in boardGamePlay.Play.Players.OrderByDescending(p => p.Win).ThenByDescending(p => p.Score))
+                                <br />
+                                @if (boardGamePlay.Play.Comments != null)
+                                {
+                                    <span>@boardGamePlay.Play.Comments</span>
+                                    <br />
+                                }
+                                @if (boardGamePlay.Play.Quantity > 1)
+                                {
+                                    <span>@boardGamePlay.Play.Quantity Runden</span>
+                                    <br />
+                                }
+                                @{
+                                    var anyScore = boardGamePlay.Play.Players.Any(p => p.Score.HasValue && p.Score != 0);
+                                    var playersOrdered = boardGamePlay.Play.Players.OrderByDescending(p => p.Win).ThenByDescending(p => p.Score).ToList();
+                                    var last = playersOrdered.Last();
+                                }
+                                @foreach (var player in playersOrdered)
                                 {
                                     var scoreDisplay = $"{player.Score:0.}";
                                     if (player.Username != null)
@@ -43,15 +57,26 @@
                                     {
                                         <span class="small@(player.Win ? " bold" : "")">@player.Name</span>
                                     }
-                                    <smaller class="smallest@(player.Win ? " bold" : "")">@scoreDisplay</smaller>
-                                    <br />
+                                    if (anyScore)
+                                    {
+                                        <smaller class="smaller@(player.Win ? " bold" : "")">@scoreDisplay</smaller>
+                                    }
+                                    if (player != last)
+                                    {
+                                        <span>-</span>
+                                    }
                                 }
+                            </td>
+                            <td style="text-align: right">
+                                
                             </td>
                         </tr>
                     </table>
                 </td>
                 <td>
-                    <partial name="_PlayerNumbers" model="boardGamePlay.BoardGame" />
+                    <span class="small">@boardGamePlay.Play.Location</span>
+                    @*<br />
+                    <a class="small" href="https://boardgamegeek.com/play/details/@boardGamePlay.Play.Id">Details</a>*@
                 </td>
             </tr>
         }
