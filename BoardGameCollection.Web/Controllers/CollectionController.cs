@@ -29,7 +29,7 @@ namespace BoardGameCollection.Web.Controllers
 
         public ActionResult Owned(string username, [FromQuery] int? bestWith)
         {
-            var list = new OwnedGamesList(GetGameList((manager, s) => manager.GetGamePossessions(s), username, bestWith).ToList());
+            var list = new OwnedGamesList(GetGameList((manager, s) => manager.GetGamePossessions(s), username, bestWith, hideParentlessExpansions: true).ToList());
             return View(list);
         }
 
@@ -48,7 +48,7 @@ namespace BoardGameCollection.Web.Controllers
             return View(GetGameList((manager, s) => manager.GetBoardGamePlays(), "kuhlschrank", bestWith));
         }
 
-        private IEnumerable<T> GetGameList<T>(Func<IBoardGameManager, string, IEnumerable<T>> listDelegate, string username, int? bestWith = null) where T : IHasBoardGame
+        private IEnumerable<T> GetGameList<T>(Func<IBoardGameManager, string, IEnumerable<T>> listDelegate, string username, int? bestWith = null, bool hideParentlessExpansions = false) where T : IHasBoardGame
         {
             var list = new List<T>();
             if (string.IsNullOrWhiteSpace(username)) username = "kuhlschrank,cemon,the_happy_llama";
@@ -66,9 +66,12 @@ namespace BoardGameCollection.Web.Controllers
                 if (bestWith.HasValue)
                     gamesToAdd = gamesToAdd.Where(hbg => hbg.BoardGame.IsExpansion || hbg.BoardGame.IsBestWith(bestWith.Value)).ToList();
 
-                // remove parentless expansions
-                var parentfulExpansionIds = gamesToAdd.Where(bg => !bg.BoardGame.IsExpansion).SelectMany(bg => bg.BoardGame.ExpansionIds).ToList();
-                gamesToAdd = gamesToAdd.Where(bg => !bg.BoardGame.IsExpansion || parentfulExpansionIds.Contains(bg.BoardGame.Id)).ToList();
+                if (hideParentlessExpansions)
+                {
+                    // remove parentless expansions
+                    var parentfulExpansionIds = gamesToAdd.Where(bg => !bg.BoardGame.IsExpansion).SelectMany(bg => bg.BoardGame.ExpansionIds).ToList();
+                    gamesToAdd = gamesToAdd.Where(bg => !bg.BoardGame.IsExpansion || parentfulExpansionIds.Contains(bg.BoardGame.Id)).ToList();
+                }
 
                 list.AddRange(gamesToAdd);
             }
