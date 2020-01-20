@@ -53,6 +53,7 @@ namespace BoardGameCollection.Web
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseRequestLocalization();
 
             app.UseEndpoints(endpoints =>
             {

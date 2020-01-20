@@ -11,12 +11,14 @@
 <h2>Gespielt</h2>
 
 <table class="game-table">
-    @foreach (var dayGroup in Model.GroupBy(p => p.Play.Date.Date).OrderByDescending(group => group.Key))
+    @foreach (var dayGroup in Model.GroupBy(p => new { p.Play.Date.Date, p.Play.Location }).OrderByDescending(group => group.Key.Date).ThenBy(group => group.Key.Location))
     {
-        var headerModel = new GameTableGroupHeaderModel(dayGroup.Key.ToString("D"), right: "Ort");
+        var headerModel = new GameTableGroupHeaderModel($"{dayGroup.Key.Date.ToString("D")} - {dayGroup.Key.Location}", right: "Partie");
+        var dayPlaysCounter = dayGroup.Count();
         <partial name="_GameTableGroupHeader" model="headerModel" />
-        @foreach (var boardGamePlay in dayGroup.OrderByDescending(p => p.Play.Date))
+        @foreach (var boardGamePlay in dayGroup.OrderByDescending(p => p.Play.Id))
         {
+            var playOfTheDay = dayPlaysCounter--;
             <tr>
                 <td style="vertical-align:top">
                     <a href="@boardGamePlay.BoardGame.ImageUri" target="_blank">
@@ -68,15 +70,12 @@
                                 }
                             </td>
                             <td style="text-align: right">
-                                
                             </td>
                         </tr>
                     </table>
                 </td>
                 <td>
-                    <span class="small">@boardGamePlay.Play.Location</span>
-                    @*<br />
-                    <a class="small" href="https://boardgamegeek.com/play/details/@boardGamePlay.Play.Id">Details</a>*@
+                    <a href="https://boardgamegeek.com/play/details/@boardGamePlay.Play.Id">@playOfTheDay</a>
                 </td>
             </tr>
         }

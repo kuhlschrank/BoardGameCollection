@@ -39,11 +39,11 @@
     <div class="container">
         <main role="main" class="pb-3">
             <div class="player-filter" style="display:flex;">
-                <span class="nav-link text-dark">best with:</span>
+                <span class="nav-link text-dark">Beste #Spieler:</span>
                 @{
                     var activeBestWith = Context.Request.Query["bestWith"].ToString();
                 }
-                <a class="nav-link text-dark@(activeBestWith == "" ? " active" : "")" href="?bestWith=">off</a>
+                <a class="nav-link text-dark@(activeBestWith == "" ? " active" : "")" href="?bestWith=">aus</a>
                 @foreach (var bestWith in Enumerable.Range(2, 7))
                 {
                     <a class="nav-link text-dark@(activeBestWith == bestWith.ToString() ? " active" : "")" href="?bestWith=@bestWith">@bestWith</a>
