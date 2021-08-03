@@ -51,7 +51,7 @@ namespace BoardGameCollection.Web.Controllers
         private IEnumerable<T> GetGameList<T>(Func<IBoardGameManager, string, IEnumerable<T>> listDelegate, string username, int? bestWith = null, bool hideParentlessExpansions = false) where T : IHasBoardGame
         {
             var list = new List<T>();
-            if (string.IsNullOrWhiteSpace(username)) username = "kuhlschrank,cemon,the_happy_llama";
+            if (string.IsNullOrWhiteSpace(username)) username = "kuhlschrank,cemon,the_happy_llama,Toni_Mahony";
             foreach (var singleName in username.Split(','))
             {
                 var cacheKey = $"{singleName}|{listDelegate.GetHashCode()}";
