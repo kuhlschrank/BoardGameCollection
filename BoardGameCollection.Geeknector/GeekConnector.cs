@@ -10,12 +10,28 @@ using BoardGameCollection.Core.GeekConnector.Models;
 using BoardGameCollection.Core.Services;
 using BoardGameCollection.Core.Models;
 using System.Threading;
+using Microsoft.Extensions.Configuration;
 
 namespace BoardGameCollection.Geeknector
 {
     public class GeekConnector : IGeekConnector
     {
-        private const string baseUrl = "http://boardgamegeek.com/xmlapi2";
+        private readonly string _bggToken;
+        
+        public GeekConnector(IConfiguration configuration)
+        {
+            _bggToken = configuration.GetConnectionString("BggToken");
+            if (string.IsNullOrEmpty(_bggToken))
+                throw new ArgumentNullException("BggToken");
+        }
+        
+        private WebRequest CreateBggRequest(string path)
+        {
+            const string baseUrl = "https://boardgamegeek.com/xmlapi2/";
+            var request = WebRequest.CreateHttp(baseUrl + path);
+            request.Headers.Add("Authorization", "Bearer " + _bggToken);
+            return request;
+        }
 
         //<item collid="19005529" subtype="boardgame" objectid="105551" objecttype="thing">
         //    <name sortindex="1">Archipelago</name>
@@ -64,7 +80,7 @@ namespace BoardGameCollection.Geeknector
             var tries = 3; // der Geek liefert manchmal für eine Anfrage keine Daten...
             while (true)
             {
-                var request = WebRequest.Create($"{baseUrl}/collection?brief={brief}&username={username}&{listType}=1");
+                var request = CreateBggRequest($"collection?brief={brief}&username={username}&{listType}=1");
                 var response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode != HttpStatusCode.OK && tries > 0)
                 {
@@ -95,9 +111,9 @@ namespace BoardGameCollection.Geeknector
                         try
                         {
                             var boardGames = new List<BoardGame>();
+                            
                             var request =
-                                WebRequest.Create("http://boardgamegeek.com/xmlapi2/thing?stats=1&id=" +
-                                                  string.Join(",", page));
+                                CreateBggRequest("thing?stats=1&id=" + string.Join(",", page));
                             var response = request.GetResponse();
                             string responseString;
                             using (var reader = new StreamReader(response.GetResponseStream()))
@@ -129,7 +145,7 @@ namespace BoardGameCollection.Geeknector
             var result = new List<Play>();
             while (true)
             {
-                var request = WebRequest.Create($"{baseUrl}/plays?username={username}&page={page++}");
+                var request = CreateBggRequest($"plays?username={username}&page={page++}");
                 var response = (HttpWebResponse)request.GetResponse();
 
                 string responseString;

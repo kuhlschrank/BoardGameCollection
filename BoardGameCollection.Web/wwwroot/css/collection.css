@@ -1,4 +1,8 @@
-﻿.small {
+﻿.bgg-logo {
+    height: 36px;
+}
+
+.small {
     font-size: small;
 }
 

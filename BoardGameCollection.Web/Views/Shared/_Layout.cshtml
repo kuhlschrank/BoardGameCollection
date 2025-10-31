@@ -20,20 +20,21 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         @foreach (var link in new (string displayName, string actionName, string userName)[] {
-                             ("Florian", "Owned", "kuhlschrank"),
-                             ("Andreas", "Owned", "cemon"),
-                             ("Thomas", "Owned", "the_happy_llama"),
-                             ("Toni", "Owned", "Toni_Mahony"),
-                             ("Alle", "Owned", ""),
-                             ("Wunschlisten", "Wishlist", ""),
-                             ("Spielewünsche", "WantToPlay", ""),
-                             ("Gespielt", "Plays", null)
-                         })
+                              ("Florian", "Owned", "kuhlschrank"),
+                              ("Andreas", "Owned", "cemon"),
+                              ("Thomas", "Owned", "the_happy_llama"),
+                              ("Toni", "Owned", "Toni_Mahony"),
+                              ("Alle", "Owned", ""),
+                              ("Wunschlisten", "Wishlist", ""),
+                              ("Spielewünsche", "WantToPlay", ""),
+                              ("Gespielt", "Plays", null)
+                          })
                         {
                             <li class="nav-item">@Html.ActionLink(link.displayName, link.actionName, new { username = link.userName }, new { @class = "nav-link text-dark" })</li>
                         }
                     </ul>
                 </div>
+                <a href="https://boardgamegeek.com" target="_blank"><img class="bgg-logo" src="/powered_by_BGG_01_SM.png" /></a>
             </div>
         </nav>
     </header>
