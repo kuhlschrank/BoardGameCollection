@@ -1,9 +1,7 @@
-﻿FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.0-buster-slim
+﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0
 
-EXPOSE 80
-
-RUN mkdir app
-ADD bin/Debug/netcoreapp3.1/publish/ app/
 WORKDIR /app
+COPY bin/Debug/net10.0/publish/ .
 
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "BoardGameCollection.Web.dll"]
