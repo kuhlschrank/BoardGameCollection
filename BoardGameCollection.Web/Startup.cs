@@ -24,13 +24,12 @@ namespace BoardGameCollection.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
-            services.AddSingleton<IXDocumentCache, XDocumentCache>();
             
             services.AddTransient<IBoardGameRepository, BoardGameRepository>();
             services.AddTransient<IGeekConnector, GeekConnector>();
             services.AddTransient<IBoardGameManager, BoardGameManager>();
 
+            services.AddSingleton<IXDocumentCache, XDocumentCache>();
             services.AddHttpClient<IGeekConnector, GeekConnector>(c =>
             {
                 c.DefaultRequestHeaders.Authorization =

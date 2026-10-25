@@ -21,9 +21,12 @@ namespace BoardGameCollection.Data.Entities
         public string ImageUri { get; set; }
         public int? MinPlayers { get; set; }
         public int? MaxPlayers { get; set; }
-        public int? YearPublished { get; set; }
+        public int? MinAge { get; set; }
         public string SuggestedPlayerNumbers { get; set; }
+        public int? SuggestedAge { get; set; }
+        public int? YearPublished { get; set; }
         public double? AverageRating { get; set; }
+        public double? AverageWeight { get; set; }
         public DateTimeOffset LastUpdate { get; set; }
 
         public ICollection<Expansion> Expansions { get; set; }

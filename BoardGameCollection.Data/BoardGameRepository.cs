@@ -67,9 +67,12 @@ namespace BoardGameCollection.Data
                     entity.ImageUri = boardGame.ImageUri;
                     entity.MinPlayers = boardGame.MinPlayers;
                     entity.MaxPlayers = boardGame.MaxPlayers;
-                    entity.YearPublished = boardGame.YearPublished;
+                    entity.MinAge = boardGame.MinAge;
                     entity.SuggestedPlayerNumbers = string.Join(";", boardGame.SuggestedPlayerNumbers);
+                    entity.SuggestedAge = boardGame.SuggestedAge;
+                    entity.YearPublished = boardGame.YearPublished;
                     entity.AverageRating = boardGame.AverageRating;
+                    entity.AverageWeight = boardGame.AverageWeight;
                     entity.LastUpdate = DateTimeOffset.Now;
                     entity.IsExpansion = boardGame.IsExpansion;
 

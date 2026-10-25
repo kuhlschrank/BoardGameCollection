@@ -239,14 +239,17 @@ namespace BoardGameCollection.Geeknector
             var titleNode = node.Elements(XName.Get("name")).FirstOrDefault(x => x.Attribute(XName.Get("type")).Value == "primary").Attribute(XName.Get("value"));
             var minPlayersNode = node.Elements(XName.Get("minplayers")).FirstOrDefault().Attribute(XName.Get("value"));
             var maxPlayersNode = node.Elements(XName.Get("maxplayers")).FirstOrDefault().Attribute(XName.Get("value"));
+            var minAgeNode = node.Elements(XName.Get("minage")).FirstOrDefault().Attribute(XName.Get("value"));
             var thumnailUriNode = node.Elements(XName.Get("thumbnail")).FirstOrDefault();
             var imageUriNode = node.Elements(XName.Get("image")).FirstOrDefault();
             var yearPublishedNode = node.Elements(XName.Get("yearpublished")).FirstOrDefault().Attribute(XName.Get("value"));
             var suggestedPlayerNumberNode = node.Elements(XName.Get("poll")).FirstOrDefault(x => x.Attribute(XName.Get("name")).Value == "suggested_numplayers");
+            var suggestedPlayerAgeNode = node.Elements(XName.Get("poll")).FirstOrDefault(x => x.Attribute(XName.Get("name")).Value == "suggested_playerage");
 
             var statisticsNode = node.Elements(XName.Get("statistics")).FirstOrDefault();
             var ratingsNode = statisticsNode.Elements(XName.Get("ratings")).FirstOrDefault();
-            var averageAttribute = ratingsNode.Elements(XName.Get("average")).FirstOrDefault().Attribute(XName.Get("value"));
+            var averageAttribute = ratingsNode.Elements(XName.Get("average")).FirstOrDefault()?.Attribute(XName.Get("value"));
+            var weightAttribute = ratingsNode.Elements(XName.Get("averageweight")).FirstOrDefault()?.Attribute(XName.Get("value"));
 
             var expansionIds = new List<int>();
 
@@ -265,7 +268,10 @@ namespace BoardGameCollection.Geeknector
                 ThumbnailUri = thumnailUriNode == null ? "" : thumnailUriNode.Value,
                 ImageUri = imageUriNode == null ? "" : imageUriNode.Value,
                 YearPublished = yearPublishedNode == null ? 1900 : Int32.Parse(yearPublishedNode.Value),
-                AverageRating = averageAttribute == null ? 0 : Double.Parse(averageAttribute.Value, CultureInfo.InvariantCulture)
+                AverageRating = averageAttribute == null ? 0 : Double.Parse(averageAttribute.Value, CultureInfo.InvariantCulture),
+                AverageWeight =  weightAttribute == null ? 0 : Double.Parse(weightAttribute.Value, CultureInfo.InvariantCulture),
+                MinAge = minAgeNode == null ? -1 : Int32.Parse(minAgeNode.Value),
+                SuggestedAge = SuggestedAge(suggestedPlayerAgeNode),
             };
 
             return boardGame;
@@ -298,7 +304,8 @@ namespace BoardGameCollection.Geeknector
                         numvotes = Int32.Parse(n.Attribute("numvotes").Value),
                         value = n.Attribute("value").Value
                     })
-                    .Where(n => n.numvotes > 0);
+                    .Where(n => n.numvotes > 0)
+                    .ToArray();
                 if (!validResults.Any())
                     continue;
 
@@ -314,6 +321,30 @@ namespace BoardGameCollection.Geeknector
                     suggestedPlayerNumbers.Add($"-{numPlayers}");
             }
             return suggestedPlayerNumbers.ToArray();
+        }
+
+        private static int? SuggestedAge(XElement suggestedPlayerAgeNode)
+        {
+            int? suggestedPlayerAge = null;
+            foreach (var resultsNode in suggestedPlayerAgeNode.Elements("results"))
+            {
+                var validResults = resultsNode.Elements("result")
+                    .Select(n => new
+                    {
+                        numvotes = Int32.Parse(n.Attribute("numvotes").Value),
+                        value = Int32.Parse(n.Attribute("value").Value.Split(" ").First())
+                    })
+                    .Where(n => n.numvotes > 0)
+                    .OrderByDescending(n => n.numvotes)
+                    .ThenBy(n => n.value)
+                    .ToArray();
+                if (!validResults.Any())
+                    continue;
+
+                suggestedPlayerAge = validResults.First().value;
+
+            }
+            return suggestedPlayerAge;
         }
     }
 }

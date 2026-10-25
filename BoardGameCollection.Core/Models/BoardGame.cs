@@ -14,11 +14,14 @@ namespace BoardGameCollection.Core.Models
         public string ImageUri { get; set; }
         public int MinPlayers { get; set; }
         public int MaxPlayers { get; set; }
+        public int MinAge { get; set; }
+        public string[] SuggestedPlayerNumbers { get; set; }
+        public int? SuggestedAge { get; set; }
         public int YearPublished { get; set; }
         public List<int> ExpansionIds { get; set; } = new List<int>();
-        public string[] SuggestedPlayerNumbers { get; set; }
         public IEnumerable<string> BestWithPlayerNumbers => SuggestedPlayerNumbers.Where(n => !n.StartsWith('-'));
         public double AverageRating { get; set; }
+        public double AverageWeight { get; set; }
 
         public DateTime LastUpdated { get; set; }
 
