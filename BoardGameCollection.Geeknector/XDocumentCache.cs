@@ -26,8 +26,7 @@ public interface IXDocumentCache
 public sealed class XDocumentCache : IXDocumentCache
 {
     private static readonly MemoryCacheEntryOptions DefaultOptions = new MemoryCacheEntryOptions()
-        .SetSlidingExpiration(TimeSpan.FromMinutes(30))
-        .SetAbsoluteExpiration(TimeSpan.FromHours(6));
+        .SetAbsoluteExpiration(TimeSpan.FromMinutes(3));
 
     private readonly IMemoryCache _cache;
 
