@@ -1,8 +1,8 @@
 ﻿using BoardGameCollection.Core.Services;
 using System.Collections.Generic;
-using System.Linq;
 using CoreModels = BoardGameCollection.Core.Models;
 using System;
+using System.Linq;
 using BoardGameCollection.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

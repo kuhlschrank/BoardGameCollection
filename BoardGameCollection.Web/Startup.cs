@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Http.Headers;
 using BoardGameCollection.Core.Services;
 using BoardGameCollection.Data;
 using BoardGameCollection.Domain;
 using BoardGameCollection.Geeknector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,9 +25,17 @@ namespace BoardGameCollection.Web
         {
             services.AddControllersWithViews();
 
+            services.AddSingleton<IXDocumentCache, XDocumentCache>();
+            
             services.AddTransient<IBoardGameRepository, BoardGameRepository>();
             services.AddTransient<IGeekConnector, GeekConnector>();
             services.AddTransient<IBoardGameManager, BoardGameManager>();
+
+            services.AddHttpClient<IGeekConnector, GeekConnector>(c =>
+            {
+                c.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Configuration.GetConnectionString("BggToken"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
