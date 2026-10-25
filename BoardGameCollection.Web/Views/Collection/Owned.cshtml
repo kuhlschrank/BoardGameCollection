@@ -19,7 +19,6 @@
         @foreach (var ownedGame in yearGroup.OrderByDescending(p => p.BoardGame.AverageRating))
         {
             <tr>
-                @{ var game = ownedGame.BoardGame; }
                 @{ var rowspan = ownedGame.Expansions.Count + 1; }
                 <td rowspan="@rowspan" style="vertical-align:top">
                     <a href="@ownedGame.BoardGame.ImageUri" target="_blank">
@@ -30,33 +29,7 @@
                     <table width="100%">
                         <tr>
                             <td>
-                                <div>
-                                    <a target="_blank" href="http://boardgamegeek.com/boardgame/@ownedGame.BoardGame.Id" style="text-decoration: none">@Html.DisplayFor(modelItem => ownedGame.BoardGame.Title)</a>
-                                </div>
-                                
-                                <div class="chips">
-                                    <span class="chip rating" style="--r:@game.AverageRating.ToString("0.00", CultureInfo.InvariantCulture)" title="BGG-Rating">
-                                        ★ @string.Format(CultureInfo.InvariantCulture, "{0:0.00}", game.AverageRating)
-                                    </span>
-                                    
-                                    @if (game.AverageWeight > 0)
-                                    {
-                                        <span class="chip weight" style="--w:@game.AverageWeight.ToString("0.0", CultureInfo.InvariantCulture)" title="Weight (BGG)">
-                                            ⚖️ @string.Format(CultureInfo.InvariantCulture, "{0:0.00}", game.AverageWeight)
-                                        </span>
-                                    }
-
-                                    @if (game.MinAge > 0)
-                                    {
-                                        <span class="chip age" title="Minimum age (publisher)">
-                                            @($"♙ {game.MinAge}+")
-                                            @if (game.SuggestedAge > 0)
-                                            {
-                                                @($"/ {game.SuggestedAge}+")
-                                            }
-                                        </span>
-                                    }
-                                </div>
+                                <partial name="_BoardGameTitleAndMore" model="ownedGame.BoardGame" />
                             </td>
                             <td style="text-align: right">
                                 @foreach (var owner in ownedGame.Owners)

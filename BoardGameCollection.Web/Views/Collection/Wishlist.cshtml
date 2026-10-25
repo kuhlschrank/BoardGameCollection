@@ -37,7 +37,7 @@
                     <table width="100%">
                         <tr>
                             <td>
-                                <a target="_blank" href="http://boardgamegeek.com/boardgame/@item.Id" style="text-decoration: none">@item.Title</a> (@string.Format(CultureInfo.InvariantCulture, "{0:0.00}", item.AverageRating))
+                                <partial name="_BoardGameTitleAndMore" model="item" />
                             </td>
                             <td style="text-align: right">
                                 @foreach (var ownerGroup in boardGameGrouping)
