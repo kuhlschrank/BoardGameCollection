@@ -16,7 +16,7 @@
     priorities[5] = "Don't buy this";
 }
 
-<h2>Spiele von @owners</h2>
+<h4>Spiele von @owners</h4>
 
 <table class="game-table">
     @foreach (var group in Model.GroupBy(p => new { p.Priority, PriorityName = priorities[p.Priority] }).OrderBy(group => group.Key.Priority))

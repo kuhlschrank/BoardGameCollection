@@ -69,3 +69,57 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+.nav-link {
+  padding: 0.5rem 0.8rem;
+}
+
+/* ------ */
+
+.chips {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: -5px;
+  vertical-align: middle;
+}
+.chips:empty { display: none; }
+
+.chip {
+  font-size: 0.68rem;
+  padding: 0px 6px;
+  border-radius: 10px;
+  white-space: nowrap;
+  color: #222;
+  font-weight: normal;
+}
+
+/* Weight: 1.0 = kräftiges Grün, 3.0 = Gelb, 5.0 = kräftiges Rot (jeweils nicht zu grell) */
+.chip.weight {
+  --t: calc((clamp(1, var(--w), 5) - 1) / 4);   /* 0..1 */
+  background: hsl(
+          calc(125 - var(--t) * 125)            /* Hue 125 (grün) -> 0 (rot) */
+          50%                                   /* Sättigung konstant */
+          calc(78% + var(--t) * 2%)             /* Helligkeit 78% -> 80% */
+  );
+  color: #222;
+}
+
+/* Rating: 1.0 = hellgrau, 6.0 = blass, 7.0 = mittel, 8.0 = kräftiges Blau */
+.chip.rating {
+  --rc: clamp(1, var(--r), 8);
+  /* Sättigung: 1.0 -> 0%, 6.0 -> 30%, 7.0 -> 50%, 8.0 -> 70% */
+  --s: max((var(--rc) - 1) * 6, 30 + (var(--rc) - 6) * 20);
+  /* Helligkeit: 1.0 -> 90%, 6.0 -> 88%, 7.0 -> 81%, 8.0 -> 74% */
+  --l: min(90 - (var(--rc) - 1) * 0.4, 88 - (var(--rc) - 6) * 7);
+  background: hsl(210 calc(var(--s) * 1%) calc(var(--l) * 1%));
+  color: #222;
+}
+
+/* Alter: neutrales Hellgrau */
+.chip.age {
+  background: #eceff1;
+}
+
+@media (max-width: 600px) {
+  .chips { display: flex; margin-top: 0px; }
+}

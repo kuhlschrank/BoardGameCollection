@@ -8,7 +8,7 @@
     ViewBag.Title = "Gespielt";
 }
 
-<h2>Gespielt</h2>
+<h4>Gespielt</h4>
 
 <table class="game-table">
     @foreach (var dayGroup in Model.GroupBy(p => new { p.Play.Date.Date, p.Play.Location }).OrderByDescending(group => group.Key.Date).ThenBy(group => group.Key.Location))
